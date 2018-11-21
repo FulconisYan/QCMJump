@@ -15,7 +15,6 @@ function init() {
 	w = canvas.width;
 	h = canvas.height;
 
-
 	/**********************************************************/
 	//inserer le fond de notre canvas 
 	/*imageFond = new Image();
@@ -27,19 +26,18 @@ function init() {
 
 	imageFond.src = "images/fond.jpg";*/
 
-
 	/*************************************************************/
 	let tabNames = ["Sport", "Histoire", "Culture", "Sciences"];
-	tableauButton = new Array(tabNames.length).fill(0);
-	let x = w/2 - 150;
+	let x = w/2 - 150; // Yan : C'est quoi le w ? Ce ne serait pas par hasard la largeur du canvas ? 
 	let y = -30;
-	tableauButton = tableauButton.map(function(e, i) {
-		return new button(tabNames[i], x, y += 100, 250, 50);
+	tableauButton = new Array(tabNames.length).fill(0).map(function(e, i) {
+		return new button(x, y += 100, 250, 50, tabNames[i]);
 	});
 
 	/*************************************************************/
 
-	canvas.onclick = mouseHandler;
+	canvas.onclick = mouseClickHandler;
+	canvas.onmousemove = mouseOverHandler;
 
 	requestAnimationFrame(mainloop);
 
@@ -67,10 +65,21 @@ function init() {
 	
 
 /****************************************************************************/
-let mousePos;
-function mouseHandler(event){
-	console.log("hello");
-	mousePos = { x: event.clientX, y: event.clientY };
+//le clique de la souris sur le canvas
+let mClick;
+function mouseClickHandler(event){
+	let rect = canvas.getBoundingClientRect();
+	mClick = {};// Ceci est un objet "vide" en JSON (en gros)
+	mClick.x = event.clientX - rect.left;
+	mClick.y = event.clientY - rect.top;
+}
+// la souris est sur le canvas
+let mOver = { x:0, y:0 };
+function mouseOverHandler(event){
+	let rect = canvas.getBoundingClientRect();
+	mOver = {};
+	mOver.x = event.clientX - rect.left;
+	mOver.y = event.clientY - rect.top;
 }
 
 /****************************************************************************/
@@ -80,18 +89,21 @@ function mainloop()
 	ctx.clearRect(0,0,canvas.width, canvas.height);
 	//drawJoueur();
 	//creation button du bas 
-	
+
 	tableauButton.forEach(function(e) {
 		e.draw(ctx);
 
-		if(mousePos != null)
-			if(e.checkClick(mousePos) == true){
-				console.log(e.texte);
-				mousePos = null;
+		e.checkOver(mOver);//vérfier avec la souris les positions du bloc
+
+		if(mClick != null){
+			if(e.checkClick(mClick) == true){
+				//changer écran
+				console.log("TODO: "+e.texte);
 			}
+		}
 	});
 
-
+	mClick = null;
 
 	requestAnimationFrame(mainloop);
 }
