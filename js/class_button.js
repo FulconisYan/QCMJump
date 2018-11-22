@@ -18,9 +18,8 @@ class button{
 		ctx.fillStyle = this.colour;
 		ctx.fillRect(0,0,this.l,this.h);
 		//rajouter le texte au centre
-		ctx.translate(this.l/4, this.h/2);
-		ctx.font = "15pt Calibri";
 		ctx.fillStyle = "white";
+		ctx.translate(this.l/4, this.h/2);
 		ctx.fillText(this.texte,0,0);
 		ctx.restore();
 	}

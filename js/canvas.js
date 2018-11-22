@@ -1,9 +1,13 @@
 window.onload = init;
 
 let canvas, ctx, w, h;
-let joueur;
+//let joueur;
+
+let ecranJeu = "selection";
+let categorie = "aucune";
 
 let tableauButton;
+let buttonRetour;
 
 function init() {
   
@@ -14,6 +18,8 @@ function init() {
 
 	w = canvas.width;
 	h = canvas.height;
+
+	ctx.font = "15pt Calibri";
 
 	/**********************************************************/
 	//inserer le fond de notre canvas 
@@ -35,6 +41,11 @@ function init() {
 	});
 
 	/*************************************************************/
+
+	buttonRetour = new button(30, 30, 100, 40, "Retour");
+
+	/*************************************************************/
+
 
 	canvas.onclick = mouseClickHandler;
 	canvas.onmousemove = mouseOverHandler;
@@ -86,22 +97,59 @@ function mouseOverHandler(event){
 
 function mainloop()
 {
-	ctx.clearRect(0,0,canvas.width, canvas.height);
+	ctx.clearRect(0, 0, canvas.width, canvas.height);
 	//drawJoueur();
 	//creation button du bas 
 
-	tableauButton.forEach(function(e) {
-		e.draw(ctx);
+	switch(ecranJeu){
+		case "selection":
+			tableauButton.forEach(function(e) {
+				e.draw(ctx);
 
-		e.checkOver(mOver);//vérfier avec la souris les positions du bloc
+				e.checkOver(mOver);//vérfier avec la souris les positions du bloc
 
-		if(mClick != null){
-			if(e.checkClick(mClick) == true){
-				//changer écran
-				console.log("TODO: "+e.texte);
+				if(mClick != null){
+					if(e.checkClick(mClick) == true){
+						//changer écran
+						ecranJeu = "QCM";
+						categorie = e.texte;
+					}
+				}
+			});
+		break;
+
+		case "QCM":
+			buttonRetour.draw(ctx);
+
+			//ctx.save();
+			ctx.fillStyle = 'blue';
+			ctx.fillRect(180, 70, 130, 70);
+			ctx.fillStyle = 'red';
+			ctx.fillText("Catégorie: "+categorie, 200, 100);
+			//ctx.restore();
+
+			buttonRetour.checkOver(mOver);
+			if(mClick != null){
+				if(buttonRetour.checkClick(mClick) == true){
+					//changer écran
+					ecranJeu = "selection";
+					categorie = "aucune";
+				}
 			}
-		}
-	});
+		break;
+
+		case "resultatQCM":
+			//TODO
+		break;
+
+		case "resultatTotal":
+			//TODO
+		break;
+
+		default:
+			console.log("ERREUR DANS LA VARIABLE ecranJeu !!!");
+		break;
+	}
 
 	mClick = null;
 
