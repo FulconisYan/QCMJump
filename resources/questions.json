@@ -1,0 +1,323 @@
+"Hisoire" :[
+    {
+        "question":"Sultan soliman kanouni est un sultan",
+        "propositions":[
+            {
+                "ordre":1,
+                "reponse":"Othman"
+            },
+            {
+                "ordre":2,
+                "reponse":"égyptien"
+            },
+            {
+                "ordre":3,
+                "reponse":"Perse"
+            }
+        ],
+
+        "Solution": 1,
+    },
+    {
+        "question":"La première guerre mondiale s'est déroulé entre ",
+        "propositions":[
+            {
+                "ordre":1,
+                "reponse":"1912-1916"
+            },
+            {
+                "ordre":2,
+                "reponse":"1939-1945"
+            },
+            {
+                "ordre":3,
+                "reponse":"1914-1918"
+            }
+        ],
+        "Solution": 3,
+    },
+
+     {
+        "question":"Che Guevara est : ",
+        "propositions":[
+            {
+                "ordre":1,
+                "reponse":"un homme politique mexicain"
+            },
+            {
+                "ordre":2,
+                "reponse":"un révolutionnaire cubain"
+            },
+            {
+                "ordre":3,
+                "reponse":"un espion russe"
+            }
+        ],
+        "Solution": 2,
+    },
+
+    {
+        "question":"Date de couronnement de Charlemagne : ",
+        "propositions":[
+            {
+                "ordre":1,
+                "reponse":"800"
+            },
+            {
+                "ordre":2,
+                "reponse":"1780"
+            },
+            {
+                "ordre":3,
+                "reponse":"1600"
+            }
+        ],
+        "Solution": 1,
+    },
+
+    {
+        "question":"Date de l'indépendance du Singapour : ",
+        "propositions":[
+            {
+                "ordre":1,
+                "reponse":"Aout 1942"
+            },
+            {
+                "ordre":2,
+                "reponse":"Aout 1965"
+            },
+            {
+                "ordre":3,
+                "reponse":"Aout 1970"
+            }
+        ],
+        "Solution": 2,
+    },
+],
+
+
+"Sport":[
+ {
+        "question":"Qui a remporter la coupe du monde de football en 1990  : ",
+        "propositions":[
+            {
+                "ordre":1,
+                "reponse":"Allemagne"
+            },
+            {
+                "ordre":2,
+                "reponse":"Espagne"
+            },
+            {
+                "ordre":3,
+                "reponse":"Mexiqiue"
+            }
+        ],
+
+        "Solution": 1,
+    },
+
+     {
+        "question":"Les jeux olympiques d'été 2012 ont été organisé à : ",
+        "propositions":[
+            {
+                "ordre":1,
+                "reponse":"Japon"
+            },
+            {
+                "ordre":2,
+                "reponse":"USA"
+            },
+            {
+                "ordre":3,
+                "reponse":"Angleterre"
+            }
+        ],
+
+        "Solution": 3,
+    },
+
+     {
+        "question":"Les jeux olympiques d'été 2012 ont été organisé à : ",
+        "propositions":[
+            {
+                "ordre":1,
+                "reponse":"Japon"
+            },
+            {
+                "ordre":2,
+                "reponse":"USA"
+            },
+            {
+                "ordre":3,
+                "reponse":"Angleterre"
+            }
+        ],
+
+        "Solution": 3,
+    },
+
+    {
+        "question":"parmi ces joueuse de Tennis laquelle est classé au top en 2018 : ",
+        "propositions":[
+            {
+                "ordre":1,
+                "reponse":"kristina MLADENOV"
+            },
+            {
+                "ordre":2,
+                "reponse":"Caroline GARCIA"
+            },
+            {
+                "ordre":3,
+                "reponse":"Pauline PARMENTIER"
+            }
+        ],
+
+        "Solution": 2,
+    },
+
+    {
+        "question":"parmi ces joueuse de Tennis laquelle est classé au top en 2018 : ",
+        "propositions":[
+            {
+                "ordre":1,
+                "reponse":"kristina MLADENOV"
+            },
+            {
+                "ordre":2,
+                "reponse":"Caroline GARCIA"
+            },
+            {
+                "ordre":3,
+                "reponse":"Pauline PARMENTIER"
+            }
+        ],
+
+        "Solution": 2,
+    },
+
+
+     {
+        "question":" En 2012 Florent Manaudou a remporté une médaille  : ",
+        "propositions":[
+            {
+                "ordre":1,
+                "reponse":"D'Or"
+            },
+            {
+                "ordre":2,
+                "reponse":"D'Argent"
+            },
+            {
+                "ordre":3,
+                "reponse":"De Bronze"
+            }
+        ],
+
+        "Solution": 1,
+    }, 
+],
+
+"Sciences" :[
+ {
+        "question":"De combien de couches se compose-elle la Terre ?",
+        "propositions":[
+            {
+                "ordre":1,
+                "reponse":"6"
+            },
+            {
+                "ordre":2,
+                "reponse":"7"
+            },
+            {
+                "ordre":3,
+                "reponse":"8"
+            }
+        ],
+
+        "Solution": 2,
+    },
+
+     {
+        "question":"Loi universelle de Gravité : ",
+        "propositions":[
+            {
+                "ordre":1,
+                "reponse":"F(a/b) = F(b/a) = G.(m(a) _m(b) /dˆ2)"
+            },
+            {
+                "ordre":2,
+                "reponse":"F(a/b) = F(b/a) = G.(m(a) +m(b) /dˆ2)"
+            },
+            {
+                "ordre":3,
+                "reponse":"F(a/b) = F(b/a) = G.(m(a) x m(b) /dˆ2)"
+            }
+        ],
+
+        "Solution": 3,
+    },
+
+      {
+        "question":"Une mutation génétique est : ",
+        "propositions":[
+            {
+                "ordre":1,
+                "reponse":"modification héréditaire de l’ADN"
+            },
+            {
+                "ordre":2,
+                "reponse":"modification héréditaire de l’ARN"
+            },
+            {
+                "ordre":3,
+                "reponse":"maladie génétique "
+            }
+        ],
+
+        "Solution": 1,
+    },
+
+     {
+        "question":"par quel mécanisme les plantes créent-elles de la matière organique : ",
+        "propositions":[
+            {
+                "ordre":1,
+                "reponse":"Par fermentation"
+            },
+            {
+                "ordre":2,
+                "reponse":"Par photosynthèse"
+            },
+            {
+                "ordre":3,
+                "reponse":"Par respiration"
+            }
+        ],
+
+        "Solution": 2,
+    },
+
+    {
+        "question":"Le nombre de planète dans le système solaire sans compter la terre  : ",
+        "propositions":[
+            {
+                "ordre":1,
+                "reponse":"8"
+            },
+            {
+                "ordre":2,
+                "reponse":"6"
+            },
+            {
+                "ordre":3,
+                "reponse":"7"
+            }
+        ],
+
+        "Solution": 3,
+    },
+
+]
