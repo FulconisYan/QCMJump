@@ -1,0 +1,125 @@
+[
+ {
+        "question":"Qui a remporter la coupe du monde de football en 1990  : ",
+        "propositions":[
+            {
+                "ordre":1,
+                "reponse":"Allemagne"
+            },
+            {
+                "ordre":2,
+                "reponse":"Espagne"
+            },
+            {
+                "ordre":3,
+                "reponse":"Mexiqiue"
+            }
+        ],
+
+        "Solution": 1,
+    },
+
+     {
+        "question":"Les jeux olympiques d'été 2012 ont été organisé à : ",
+        "propositions":[
+            {
+                "ordre":1,
+                "reponse":"Japon"
+            },
+            {
+                "ordre":2,
+                "reponse":"USA"
+            },
+            {
+                "ordre":3,
+                "reponse":"Angleterre"
+            }
+        ],
+
+        "Solution": 3,
+    },
+
+     {
+        "question":"Les jeux olympiques d'été 2012 ont été organisé à : ",
+        "propositions":[
+            {
+                "ordre":1,
+                "reponse":"Japon"
+            },
+            {
+                "ordre":2,
+                "reponse":"USA"
+            },
+            {
+                "ordre":3,
+                "reponse":"Angleterre"
+            }
+        ],
+
+        "Solution": 3,
+    },
+
+    {
+        "question":"parmi ces joueuse de Tennis laquelle est classé au top en 2018 : ",
+        "propositions":[
+            {
+                "ordre":1,
+                "reponse":"kristina MLADENOV"
+            },
+            {
+                "ordre":2,
+                "reponse":"Caroline GARCIA"
+            },
+            {
+                "ordre":3,
+                "reponse":"Pauline PARMENTIER"
+            }
+        ],
+
+        "Solution": 2,
+    },
+
+    {
+        "question":"parmi ces joueuse de Tennis laquelle est classé au top en 2018 : ",
+        "propositions":[
+            {
+                "ordre":1,
+                "reponse":"kristina MLADENOV"
+            },
+            {
+                "ordre":2,
+                "reponse":"Caroline GARCIA"
+            },
+            {
+                "ordre":3,
+                "reponse":"Pauline PARMENTIER"
+            }
+        ],
+
+        "Solution": 2,
+    },
+
+
+     {
+        "question":" En 2012 Florent Manaudou a remporté une médaille  : ",
+        "propositions":[
+            {
+                "ordre":1,
+                "reponse":"D'Or"
+            },
+            {
+                "ordre":2,
+                "reponse":"D'Argent"
+            },
+            {
+                "ordre":3,
+                "reponse":"De Bronze"
+            }
+        ],
+
+        "Solution": 1,
+    },
+
+
+   
+]
