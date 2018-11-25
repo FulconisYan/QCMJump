@@ -9,6 +9,8 @@ let categorie = "aucune";
 let tableauButton;
 let buttonRetour;
 
+let jsonFile;
+
 function init() {
   
 
@@ -20,6 +22,15 @@ function init() {
 	h = canvas.height;
 
 	ctx.font = "15pt Calibri";
+
+	/**********************************************************/
+
+	fetch("resources/questions.json").then((res) => {
+		return res.json();
+	})
+	.then((jsonRes) => {
+		jsonFile = jsonRes;
+	});
 
 	/**********************************************************/
 	//inserer le fond de notre canvas 
@@ -37,12 +48,12 @@ function init() {
 	let x = w/2 - 150; // Yan : C'est quoi le w ? Ce ne serait pas par hasard la largeur du canvas ? 
 	let y = -30;
 	tableauButton = new Array(tabNames.length).fill(0).map(function(e, i) {
-		return new button(x, y += 100, 250, 50, tabNames[i]);
+		return new Button(x, y += 100, 250, 50, tabNames[i]);
 	});
 
 	/*************************************************************/
 
-	buttonRetour = new button(30, 30, 100, 40, "Retour");
+	buttonRetour = new Button(30, 30, 100, 40, "Retour");
 
 	/*************************************************************/
 
@@ -156,10 +167,3 @@ function mainloop()
 	requestAnimationFrame(mainloop);
 }
 /************************************************************************/
-
-/*****************************************************************************/
-
-
-/**************************************************************************/
-
-
