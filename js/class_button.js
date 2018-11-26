@@ -1,6 +1,6 @@
-class button{
+class Button {
 
-	constructor(x,y,l,h,texte)
+	constructor(x, y, l, h, texte)
 	{
 		this.texte = texte;
 		this.x = x;

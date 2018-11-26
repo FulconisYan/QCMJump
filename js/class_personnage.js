@@ -1,6 +1,6 @@
-class personnage
+class Personnage
 {
-	constructor(x,y,vitesseMarche,img)
+	constructor(x, y, vitesseMarche, img)
 	{
 		this.x = x;
 		this.y = y;
