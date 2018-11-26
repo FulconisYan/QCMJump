@@ -1,5 +1,6 @@
 { 
     "Histoire" :
+
     [
     {
         "question":"Sultan soliman kanouni est un sultan",
@@ -63,8 +64,9 @@
                 "3": "Aout 1970"
         },
         "Solution": "2"
-    },
+    }
     ],
+
 
     "Sport" : 
     [
@@ -122,7 +124,7 @@
         
 
         "Solution": "1"
-        },
+        }
 
     ],
 
@@ -195,8 +197,7 @@
         
 
         "Solution": "3"
-    },
-        
+    }    
     ],
 
     "Culture" : 
@@ -268,6 +269,6 @@
             },
 
         "Solution": "3"
-        },
+        }
     ]
 }
