@@ -1,323 +1,278 @@
-"Hisoire" :[
+{ 
+    "Histoire" :
+    [
     {
         "question":"Sultan soliman kanouni est un sultan",
-        "propositions":[
-            {
-                "ordre":1,
-                "reponse":"Othman"
-            },
-            {
-                "ordre":2,
-                "reponse":"égyptien"
-            },
-            {
-                "ordre":3,
-                "reponse":"Perse"
-            }
-        ],
-
-        "Solution": 1,
+        "propositions":
+        {
+            "1": "Othman",
+            "2": "égyptien",
+            "3": "Perse"
+        },
+        "Solution": "1"
     },
+
     {
         "question":"La première guerre mondiale s'est déroulé entre ",
-        "propositions":[
-            {
-                "ordre":1,
-                "reponse":"1912-1916"
-            },
-            {
-                "ordre":2,
-                "reponse":"1939-1945"
-            },
-            {
-                "ordre":3,
-                "reponse":"1914-1918"
-            }
-        ],
-        "Solution": 3,
-    },
+        "propositions":
+        {
+            "1": "1912-1916",
+            "2": "1939-1945",
+            "3": "1914-1918"
+        },
+        "Solution": "3"
+    }
 
-     {
+    {
+
         "question":"Che Guevara est : ",
-        "propositions":[
-            {
-                "ordre":1,
-                "reponse":"un homme politique mexicain"
-            },
-            {
-                "ordre":2,
-                "reponse":"un révolutionnaire cubain"
-            },
-            {
-                "ordre":3,
-                "reponse":"un espion russe"
-            }
-        ],
-        "Solution": 2,
+        "propositions":
+        {
+            
+                "1" : "un homme politique mexicain",
+                "2" : "un révolutionnaire cubain",
+                "3": "un espion russe"
+            
+        
+        },
+        "Solution": "2"
     },
 
     {
+
         "question":"Date de couronnement de Charlemagne : ",
-        "propositions":[
-            {
-                "ordre":1,
+        "propositions":
+        {
+            
+                "1": "800",
+                "2" : "1780",
+                "3": "1600",
                 "reponse":"800"
-            },
-            {
-                "ordre":2,
-                "reponse":"1780"
-            },
-            {
-                "ordre":3,
-                "reponse":"1600"
-            }
-        ],
-        "Solution": 1,
+        },
+        "Solution": "1"
     },
 
     {
+
         "question":"Date de l'indépendance du Singapour : ",
-        "propositions":[
-            {
-                "ordre":1,
-                "reponse":"Aout 1942"
-            },
-            {
-                "ordre":2,
-                "reponse":"Aout 1965"
-            },
-            {
-                "ordre":3,
-                "reponse":"Aout 1970"
-            }
-        ],
-        "Solution": 2,
+        "propositions":
+        {
+            
+                "1": "Aout 1942",
+                "2": "Aout 1965",
+                "3": "Aout 1970"
+        },
+        "Solution": "2"
     },
-],
 
 
-"Sport":[
- {
+    ],
+
+    "Sport" : 
+    [
+        {
+
         "question":"Qui a remporter la coupe du monde de football en 1990  : ",
-        "propositions":[
-            {
-                "ordre":1,
-                "reponse":"Allemagne"
-            },
-            {
-                "ordre":2,
-                "reponse":"Espagne"
-            },
-            {
-                "ordre":3,
-                "reponse":"Mexiqiue"
-            }
-        ],
+        "propositions":
+        {
+            
+                "1" : "Allemagne",
+                "2" : "Espagne",
+                "3" : "Mexiqiue"     
+        },
 
-        "Solution": 1,
-    },
+        "Solution" : "1"
+        },
 
-     {
+        {
+
         "question":"Les jeux olympiques d'été 2012 ont été organisé à : ",
-        "propositions":[
+        "propositions":
             {
-                "ordre":1,
-                "reponse":"Japon"
-            },
-            {
-                "ordre":2,
-                "reponse":"USA"
-            },
-            {
-                "ordre":3,
-                "reponse":"Angleterre"
-            }
-        ],
+                "1" : "Japon",
+                "2": "USA",
+                "3": "Angleterre"
+                },
 
-        "Solution": 3,
-    },
+        "Solution": "3"
+        },
 
-     {
-        "question":"Les jeux olympiques d'été 2012 ont été organisé à : ",
-        "propositions":[
-            {
-                "ordre":1,
-                "reponse":"Japon"
-            },
-            {
-                "ordre":2,
-                "reponse":"USA"
-            },
-            {
-                "ordre":3,
-                "reponse":"Angleterre"
-            }
-        ],
+        {
 
-        "Solution": 3,
-    },
-
-    {
         "question":"parmi ces joueuse de Tennis laquelle est classé au top en 2018 : ",
-        "propositions":[
+        "propositions":
             {
-                "ordre":1,
-                "reponse":"kristina MLADENOV"
+                "1": "kristina MLADENOV",
+                "2": "Caroline GARCIA",
+                "3" : "Pauline PARMENTIER"
+                
             },
-            {
-                "ordre":2,
-                "reponse":"Caroline GARCIA"
-            },
-            {
-                "ordre":3,
-                "reponse":"Pauline PARMENTIER"
-            }
-        ],
+        
 
-        "Solution": 2,
-    },
+        "Solution": "2"
+        },
 
-    {
-        "question":"parmi ces joueuse de Tennis laquelle est classé au top en 2018 : ",
-        "propositions":[
-            {
-                "ordre":1,
-                "reponse":"kristina MLADENOV"
-            },
-            {
-                "ordre":2,
-                "reponse":"Caroline GARCIA"
-            },
-            {
-                "ordre":3,
-                "reponse":"Pauline PARMENTIER"
-            }
-        ],
+        {
 
-        "Solution": 2,
-    },
-
-
-     {
         "question":" En 2012 Florent Manaudou a remporté une médaille  : ",
-        "propositions":[
+        "propositions":
             {
-                "ordre":1,
-                "reponse":"D'Or"
+                "1" : "D'Or",
+                "2": "D'Argent",
+                "3" :  "De Bronze"
             },
-            {
-                "ordre":2,
-                "reponse":"D'Argent"
-            },
-            {
-                "ordre":3,
-                "reponse":"De Bronze"
-            }
-        ],
+        
 
-        "Solution": 1,
-    }, 
-],
+        "Solution": "1"
+        },
 
-"Sciences" :[
- {
+        {
+
+        },
+    ],
+
+    "Sciences" : 
+    [
+        {
+
         "question":"De combien de couches se compose-elle la Terre ?",
-        "propositions":[
+        "propositions":
             {
-                "ordre":1,
-                "reponse":"6"
+                "1" : "6",
+                "2": "7",
+                "3" : "8"    
             },
-            {
-                "ordre":2,
-                "reponse":"7"
-            },
-            {
-                "ordre":3,
-                "reponse":"8"
-            }
-        ],
 
-        "Solution": 2,
-    },
+        "Solution": "2"
+        },
 
-     {
+        {
+
         "question":"Loi universelle de Gravité : ",
-        "propositions":[
+        "propositions":
             {
-                "ordre":1,
-                "reponse":"F(a/b) = F(b/a) = G.(m(a) _m(b) /dˆ2)"
+                "1" : "F(a/b) = F(b/a) = G.(m(a) _m(b) /dˆ2)",
+                "2" : "F(a/b) = F(b/a) = G.(m(a) +m(b) /dˆ2)",
+                "3" : "F(a/b) = F(b/a) = G.(m(a) x m(b) /dˆ2)"
+                
             },
-            {
-                "ordre":2,
-                "reponse":"F(a/b) = F(b/a) = G.(m(a) +m(b) /dˆ2)"
-            },
-            {
-                "ordre":3,
-                "reponse":"F(a/b) = F(b/a) = G.(m(a) x m(b) /dˆ2)"
-            }
-        ],
+        
+        "Solution": "3"
+        },
 
-        "Solution": 3,
-    },
+        {
 
-      {
         "question":"Une mutation génétique est : ",
-        "propositions":[
+        "propositions":
             {
-                "ordre":1,
-                "reponse":"modification héréditaire de l’ADN"
+                "1" : "modification héréditaire de l’ADN",
+                "2": "modification héréditaire de l’ARN",
+                "3" : "maladie génétique "
             },
-            {
-                "ordre":2,
-                "reponse":"modification héréditaire de l’ARN"
-            },
-            {
-                "ordre":3,
-                "reponse":"maladie génétique "
-            }
-        ],
+        
 
-        "Solution": 1,
-    },
+        "Solution": "1"
+        },
 
-     {
+        {
+
         "question":"par quel mécanisme les plantes créent-elles de la matière organique : ",
-        "propositions":[
+        "propositions":
             {
-                "ordre":1,
-                "reponse":"Par fermentation"
+                "1" : "Par fermentation",
+                "2" : "Par photosynthèse",
+                "3": "Par respiration"
             },
-            {
-                "ordre":2,
-                "reponse":"Par photosynthèse"
-            },
-            {
-                "ordre":3,
-                "reponse":"Par respiration"
-            }
-        ],
+        
 
-        "Solution": 2,
-    },
+        "Solution": "2"
+        },
 
-    {
+        {
+
         "question":"Le nombre de planète dans le système solaire sans compter la terre  : ",
-        "propositions":[
+        "propositions":
             {
-                "ordre":1,
-                "reponse":"8"
+                "1" : "8",
+                "2": "6",
+                "3" : "7"
             },
-            {
-                "ordre":2,
-                "reponse":"6"
-            },
-            {
-                "ordre":3,
-                "reponse":"7"
-            }
-        ],
+        
 
-        "Solution": 3,
+        "Solution": "3"
     },
+        
+    ],
 
-]
+    "Culture" : 
+    [
+        {
+
+        "question":" Guillaume MUSSO est  : ",
+        "propositions":
+        {
+            
+                "1" : "Un romancier Français",
+                "2" : "Un romancier Belge",
+                "3": "Un romancier suisse"
+        },
+        
+
+        "Solution": "1"
+        },
+
+        {
+
+        "question":"Le Kazakhstan est  : ",
+        "propositions":
+        {
+                "1" : "Une région du pakistan",
+                "2" : "Un pays de l'Asie Centrale",
+                "3" : "Sous région de la Russie"
+        },
+
+        "Solution": "2"
+        },
+
+        {
+
+        "question":"Le Bacalhau est  : ",
+        "propositions":
+        {
+                "1" : "Un plat traditionnel Espagnole",
+                "2" : "Un plat tradiotnnel Italien",  
+                "3" : "Un plat traditionnel Portugais"
+            
+        },
+
+        "Solution": "3"
+        },
+
+        {
+
+        "question":"Le seule pays producteur d'Argan  : ",
+        "propositions":
+            {
+                "1" : "L'Inde",
+                "2" : "le Maroc",
+                "3": "La Mauritanie"
+            
+        },
+
+        "Solution": "2"
+        },
+
+        {
+            
+         "question":"Le Hammam est d'origine: ",
+        "propositions":
+            {
+                "1" : "Turc",
+                "2" : "Oriental",
+                "3" : "Romainne"
+            },
+
+        "Solution": "3"
+        },
+    ]
+}
