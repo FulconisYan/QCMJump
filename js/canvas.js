@@ -1,13 +1,15 @@
 window.onload = init;
 
 let canvas, ctx, w, h;
-//let joueur;
+let joueur;
 
-let ecranJeu = "selection";
-let categorie = "aucune";
+let ecranJeu = "selection";//"QCM";
+let categorie = "aucune";//"Sport";
 
 let tableauButton;
 let buttonRetour;
+
+let tabCases;
 
 let jsonFile;
 
@@ -54,37 +56,22 @@ function init() {
 	/*************************************************************/
 
 	buttonRetour = new Button(30, 30, 100, 40, "Retour");
+	joueur = new Personnage(150, 300, 50, 75);
+	tabCases = [0,0,0].map((e, i) => {
+		return new CaseReponse(70 + i*150, 110, 60, i);
+	});
 
 	/*************************************************************/
 
 
 	canvas.onclick = mouseClickHandler;
 	canvas.onmousemove = mouseOverHandler;
+	document.onkeydown = keyDownHandler;
+	document.onkeyup = keyUpHandler;
 
 	requestAnimationFrame(mainloop);
 
 }
-/***********************************************************/
-/*function drawJoueur()
-{
-		ctx.beginPath();
-		joueur = new Image();
-
-
-		joueur.onload = function()
-			{
-				ctx.drawImage(joueur,50,400);
-			};
-
-		joueur.src = "images/player.png";
-
-
-}*/
-/********************************************************************/
-
-	//animer le joueur
-		//animer le joueur
-	
 
 /****************************************************************************/
 //le clique de la souris sur le canvas
@@ -103,13 +90,61 @@ function mouseOverHandler(event){
 	mOver.x = event.clientX - rect.left;
 	mOver.y = event.clientY - rect.top;
 }
+/************************************************/
+let keys = {
+	"ArrowLeft": false,
+	"ArrowRight": false,
+	"ArrowUp": false
+};
+function keyDownHandler(event){
+	switch(event.code){
+		case "ArrowLeft":
+		case "ArrowRight":
+		case "ArrowUp":
+			keys[event.code] = true;
+		break;
+	}
+}
+function keyUpHandler(event){
+	switch(event.code){
+		case "ArrowLeft":
+		case "ArrowRight":
+		case "ArrowUp":
+			keys[event.code] = false;
+		break;
+	}
+}
+
+function checkCollisionX(vX){
+	return joueur.x+vX < 0
+	|| joueur.x+joueur.w+vX > w;	
+}
+
+function checkCollisionY(vY){
+	
+	/*let tc = tabCases.reduce((n, e, i) => {
+		if(joueur.y)
+		e.c = e.c === "red" ? "orange" : "red";
+		n+=i;
+		return n;
+	}, 0);
+
+	if(tc !== 0)
+		return 1;*/
+
+	if(joueur.y+joueur.h+vY > 375){
+		joueur.y = 375-joueur.h;
+		return 2;
+	}
+
+	return 0;
+}
 
 /****************************************************************************/
 
 function mainloop()
 {
-	ctx.clearRect(0, 0, canvas.width, canvas.height);
-	//drawJoueur();
+	ctx.clearRect(0, 0, w, h);
 	//creation button du bas 
 
 	switch(ecranJeu){
@@ -132,12 +167,23 @@ function mainloop()
 		case "QCM":
 			buttonRetour.draw(ctx);
 
-			//ctx.save();
+			//Temporary label
+			ctx.save();
 			ctx.fillStyle = 'blue';
-			ctx.fillRect(180, 70, 130, 70);
+			ctx.fillRect(180, 30, 200, 60);
 			ctx.fillStyle = 'red';
-			ctx.fillText("Catégorie: "+categorie, 200, 100);
-			//ctx.restore();
+			ctx.fillText("Catégorie: "+categorie, 200, 60);
+			ctx.fillRect(0, 375, 500, 50);
+			ctx.restore();
+			//end temporary
+
+			tabCases.forEach(function(e) {
+				e.draw(ctx);
+			});
+
+			joueur.draw(ctx);
+
+			joueur.move(keys);
 
 			buttonRetour.checkOver(mOver);
 			if(mClick != null){
