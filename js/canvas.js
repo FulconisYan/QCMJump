@@ -3,13 +3,16 @@ window.onload = init;
 let canvas, ctx, w, h;
 let joueur;
 
-let ecranJeu = "selection";//"QCM";
-let categorie = "aucune";//"Sport";
+let ecranJeu = "QCM";//"selection";
+let categorie = "Sciences";//"aucune";
 
 let tableauButton;
 let buttonRetour;
 
 let tabCases;
+let platforme;
+let lblQuestion;
+let lblReponses;
 
 let jsonFile;
 
@@ -49,8 +52,8 @@ function init() {
 	let tabNames = ["Sport", "Histoire", "Culture", "Sciences"];
 	let x = w/2 - 150; // Yan : C'est quoi le w ? Ce ne serait pas par hasard la largeur du canvas ? 
 	let y = -30;
-	tableauButton = new Array(tabNames.length).fill(0).map(function(e, i) {
-		return new Button(x, y += 100, 250, 50, tabNames[i]);
+	tableauButton = tabNames.map(e => {
+		return new Button(x, y += 100, 250, 50, e);
 	});
 
 	/*************************************************************/
@@ -58,7 +61,12 @@ function init() {
 	buttonRetour = new Button(30, 30, 100, 40, "Retour");
 	joueur = new Personnage(150, 300, 50, 75);
 	tabCases = [0,0,0].map((e, i) => {
-		return new CaseReponse(70 + i*150, 110, 60, i);
+		return new Case(70 + i*150, 110, 60, 60, i+1);
+	});
+	platforme = new Case(0, 375, 500, 20, "");
+	lblQuestion = new Case(0, 420, 500, 50, "QUESTION");
+	lblReponses = [0,0,0].map((e, i) => {
+		return new Case(50, 490 + i*80, 380, 60, i);
 	});
 
 	/*************************************************************/
@@ -70,7 +78,6 @@ function init() {
 	document.onkeyup = keyUpHandler;
 
 	requestAnimationFrame(mainloop);
-
 }
 
 /****************************************************************************/
@@ -91,51 +98,53 @@ function mouseOverHandler(event){
 	mOver.y = event.clientY - rect.top;
 }
 /************************************************/
-let keys = {
+let keyInput = {
 	"ArrowLeft": false,
 	"ArrowRight": false,
 	"ArrowUp": false
 };
 function keyDownHandler(event){
-	switch(event.code){
-		case "ArrowLeft":
-		case "ArrowRight":
-		case "ArrowUp":
-			keys[event.code] = true;
-		break;
-	}
+	if(keyInput.hasOwnProperty(event.code))
+		keyInput[event.code] = true;
 }
 function keyUpHandler(event){
-	switch(event.code){
-		case "ArrowLeft":
-		case "ArrowRight":
-		case "ArrowUp":
-			keys[event.code] = false;
-		break;
-	}
+	if(keyInput.hasOwnProperty(event.code))
+		keyInput[event.code] = false;
 }
 
-function checkCollisionX(vX){
-	return joueur.x+vX < 0
-	|| joueur.x+joueur.w+vX > w;	
+function collision(o1, o2){
+
+	if (o1.x > o2.x+o2.w || o1.x+o1.w < o2.x)
+	   return false;
+
+	if (o1.y > o2.y+o2.h || o1.y+o1.h < o2.y)
+	   return false; 
+
+	return true;
 }
 
-function checkCollisionY(vY){
+function checkCollision(){
 	
-	/*let tc = tabCases.reduce((n, e, i) => {
-		if(joueur.y)
-		e.c = e.c === "red" ? "orange" : "red";
-		n+=i;
+	let toucheCase = tabCases.reduce((n, e) => {
+		if(!n)
+			if(collision(joueur, e)){
+				e.c = e.c === "red" ? "orange" : "red";
+				n = true;
+				console.log("Reponse "+e.n);
+			}
 		return n;
-	}, 0);
+	}, false);
 
-	if(tc !== 0)
-		return 1;*/
+	if(toucheCase)
+		return 1;
 
-	if(joueur.y+joueur.h+vY > 375){
-		joueur.y = 375-joueur.h;
+	if(collision(joueur, platforme)){
 		return 2;
 	}
+
+	if(joueur.x < 0
+	|| joueur.x+joueur.w > w)
+		return 3;
 
 	return 0;
 }
@@ -159,23 +168,36 @@ function mainloop()
 						//changer écran
 						ecranJeu = "QCM";
 						categorie = e.texte;
+						let nQuestion = Math.round(Math.random() * jsonFile[categorie].length);
+						lblQuestion.n =  jsonFile[categorie][nQuestion].question;
+						lblReponses.forEach((r, i) => {
+							r.n = (i+1)+": "+jsonFile[categorie][nQuestion].propositions[i+1];
+						})
 					}
 				}
 			});
 		break;
 
 		case "QCM":
+			//Drawing
 			buttonRetour.draw(ctx);
 
 			//Temporary label
 			ctx.save();
 			ctx.fillStyle = 'blue';
-			ctx.fillRect(180, 30, 200, 60);
+			ctx.fillRect(180, 30, 240, 60);
 			ctx.fillStyle = 'red';
 			ctx.fillText("Catégorie: "+categorie, 200, 60);
-			ctx.fillRect(0, 375, 500, 50);
-			ctx.restore();
 			//end temporary
+
+			platforme.draw(ctx);
+			//Drawing questions
+			lblQuestion.draw(ctx);
+			lblReponses.forEach(e => {
+				e.draw(ctx);
+			});
+
+			ctx.restore();
 
 			tabCases.forEach(function(e) {
 				e.draw(ctx);
@@ -183,7 +205,8 @@ function mainloop()
 
 			joueur.draw(ctx);
 
-			joueur.move(keys);
+			//Checking inputs
+			joueur.move(keyInput);
 
 			buttonRetour.checkOver(mOver);
 			if(mClick != null){
