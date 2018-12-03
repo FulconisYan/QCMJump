@@ -47,7 +47,7 @@ function init() {
 	/**********************************************************/
 	
 	//Chargement des assets dans assetsToLoadURLs
-	loadAssetsUsingHowlerAndNoXhr(assetsToLoadURLs, null);
+	loadAssetsUsingHowlerAndNoXhr(assetsToLoadURLs);
 
 	/*************************************************************/
 	let tabNames = ["Sport", "Histoire", "Culture", "Sciences"];
@@ -88,19 +88,10 @@ function isImage(url) {
 function isAudio(url) {
     return (url.match(/\.(mp3|ogg|wav)$/) != null);
 }
-function loadAssetsUsingHowlerAndNoXhr(assetsToBeLoaded, callback) {
+function loadAssetsUsingHowlerAndNoXhr(assetsToBeLoaded) {
     let assetsLoaded = {};
     let nbLoaded = 0;
     let numberOfAssetsToLoad = 0;
-
-    // define ifLoad function
-    let ifLoad = () => {
-        if (++nbLoaded >= numberOfAssetsToLoad)
-			//callback(assetsLoaded);
-			loadedAssets = assetsLoaded;
-        
-        console.log("Loaded asset " + nbLoaded);
-    };
 
     // get num of assets to load
     for (let name in assetsToBeLoaded) 
@@ -113,7 +104,12 @@ function loadAssetsUsingHowlerAndNoXhr(assetsToBeLoaded, callback) {
         console.log("Loading " + url);
         if (isImage(url)) {
             assetsLoaded[name] = new Image();
-            assetsLoaded[name].onload = ifLoad;
+            assetsLoaded[name].onload = () => {
+				if (++nbLoaded >= numberOfAssetsToLoad)
+					loadedAssets = assetsLoaded;
+				
+				console.log("Loaded asset " + nbLoaded);
+			};
             // will start async loading. 
             assetsLoaded[name].src = url;
         } else {
@@ -127,7 +123,6 @@ function loadAssetsUsingHowlerAndNoXhr(assetsToBeLoaded, callback) {
                 volume: assetsToBeLoaded[name].volume,
                 onload: () => {
 					if (++nbLoaded >= numberOfAssetsToLoad)
-                        //callback(assetsLoaded);
 						loadedAssets = assetsLoaded;
                     
                     console.log("Loaded asset " + nbLoaded);
@@ -225,11 +220,11 @@ function mainloop()
 				e.checkOver(mOver);//vérfier avec la souris les positions du bloc
 
 				if(mClick != null){
-					if(e.checkClick(mClick) == true){
+					if(e.checkClick(mClick) === true){
 						//changer écran
 						ecranJeu = "QCM";
 						categorie = e.texte;
-						let nQuestion = Math.round(Math.random() * jsonFile[categorie].length);
+						let nQuestion = Math.floor(Math.random() * jsonFile[categorie].length);
 						lblQuestion.n =  jsonFile[categorie][nQuestion].question;
 						lblReponses.forEach((r, i) => {
 							r.n = (i+1)+": "+jsonFile[categorie][nQuestion].propositions[i+1];
@@ -274,7 +269,7 @@ function mainloop()
 
 			buttonRetour.checkOver(mOver);
 			if(mClick != null){
-				if(buttonRetour.checkClick(mClick) == true){
+				if(buttonRetour.checkClick(mClick) === true){
 					//changer écran
 					ecranJeu = "selection";
 					categorie = "aucune";
