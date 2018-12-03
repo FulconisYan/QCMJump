@@ -16,6 +16,16 @@ let lblReponses;
 
 let jsonFile;
 
+let imageFond;
+
+var assetsToLoadURLs = {
+    backgroundImage: { url: 'images/fond.jpg' }, 
+    player: { url: "player.png" },
+    
+};
+
+var loadedAssets;
+
 function init() {
   
 
@@ -27,7 +37,9 @@ function init() {
 	h = canvas.height;
 
 	ctx.font = "15pt Calibri";
-
+	/******************************************************/
+	
+	drawImage();
 	/**********************************************************/
 
 	fetch("resources/questions.json").then((res) => {
@@ -39,14 +51,16 @@ function init() {
 
 	/**********************************************************/
 	//inserer le fond de notre canvas 
-	/*imageFond = new Image();
+
+	/*var imageFond = new Image();
 
 
 	imageFond.onload = function(){
-		ctx.drawImage(imageFond,0,0);
+		ctx.drawImage(imageFond,0,10,500,800);
 	};
 
 	imageFond.src = "images/fond.jpg";*/
+
 
 	/*************************************************************/
 	let tabNames = ["Sport", "Histoire", "Culture", "Sciences"];
@@ -79,6 +93,16 @@ function init() {
 
 	requestAnimationFrame(mainloop);
 }
+
+/*******************************************************************************/
+function drawImage(){
+	console.log("image loaded");
+	ctx.drawImage(loadedAssets.backgroundImage, 0, 0, canvas.width, canvas.height);
+ 	ctx.drawImage(loadedAssets.bell, 20, 20);
+ 	ctx.drawImage(loadedAssets.spriteSheetBunny, 190, 0);
+	
+}
+/*********************************************************************************/
 
 /****************************************************************************/
 //le clique de la souris sur le canvas
