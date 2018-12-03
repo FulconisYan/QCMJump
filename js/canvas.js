@@ -3,8 +3,8 @@ window.onload = init;
 let canvas, ctx, w, h;
 let joueur;
 
-let ecranJeu = "QCM";//"selection";
-let categorie = "Sciences";//"aucune";
+let ecranJeu = "selection";//"QCM";
+let categorie = "aucune";//"Sciences";
 
 let tableauButton;
 let buttonRetour;
@@ -18,16 +18,14 @@ let jsonFile;
 
 let imageFond;
 
-var assetsToLoadURLs = {
+let assetsToLoadURLs = {
     backgroundImage: { url: 'images/fond.jpg' }, 
-    player: { url: "player.png" },
-    
+    player: { url: "images/player.png" },
 };
 
-var loadedAssets;
+let loadedAssets = "aucune";
 
-function init() {
-  
+function init() {  
 
 	canvas = document.querySelector("canvas#myCanvas");
 
@@ -37,9 +35,6 @@ function init() {
 	h = canvas.height;
 
 	ctx.font = "15pt Calibri";
-	/******************************************************/
-	
-	drawImage();
 	/**********************************************************/
 
 	fetch("resources/questions.json").then((res) => {
@@ -50,17 +45,9 @@ function init() {
 	});
 
 	/**********************************************************/
-	//inserer le fond de notre canvas 
-
-	/*var imageFond = new Image();
-
-
-	imageFond.onload = function(){
-		ctx.drawImage(imageFond,0,10,500,800);
-	};
-
-	imageFond.src = "images/fond.jpg";*/
-
+	
+	//Chargement des assets dans assetsToLoadURLs
+	loadAssetsUsingHowlerAndNoXhr(assetsToLoadURLs, null);
 
 	/*************************************************************/
 	let tabNames = ["Sport", "Histoire", "Culture", "Sciences"];
@@ -85,7 +72,6 @@ function init() {
 
 	/*************************************************************/
 
-
 	canvas.onclick = mouseClickHandler;
 	canvas.onmousemove = mouseOverHandler;
 	document.onkeydown = keyDownHandler;
@@ -93,17 +79,62 @@ function init() {
 
 	requestAnimationFrame(mainloop);
 }
-
 /*******************************************************************************/
-function drawImage(){
-	console.log("image loaded");
-	ctx.drawImage(loadedAssets.backgroundImage, 0, 0, canvas.width, canvas.height);
- 	ctx.drawImage(loadedAssets.bell, 20, 20);
- 	ctx.drawImage(loadedAssets.spriteSheetBunny, 190, 0);
-	
+function isImage(url) {
+    return (url.match(/\.(jpeg|jpg|gif|png)$/) != null);
 }
-/*********************************************************************************/
+function isAudio(url) {
+    return (url.match(/\.(mp3|ogg|wav)$/) != null);
+}
+function loadAssetsUsingHowlerAndNoXhr(assetsToBeLoaded, callback) {
+    let assetsLoaded = {};
+    let nbLoaded = 0;
+    let numberOfAssetsToLoad = 0;
 
+    // define ifLoad function
+    let ifLoad = () => {
+        if (++nbLoaded >= numberOfAssetsToLoad)
+			//callback(assetsLoaded);
+			loadedAssets = assetsLoaded;
+        
+        console.log("Loaded asset " + nbLoaded);
+    };
+
+    // get num of assets to load
+    for (let name in assetsToBeLoaded) 
+        numberOfAssetsToLoad++;
+
+    console.log("Nb assets to load: " + numberOfAssetsToLoad);
+
+    for (name in assetsToBeLoaded) {
+        let url = assetsToBeLoaded[name].url;
+        console.log("Loading " + url);
+        if (isImage(url)) {
+            assetsLoaded[name] = new Image();
+            assetsLoaded[name].onload = ifLoad;
+            // will start async loading. 
+            assetsLoaded[name].src = url;
+        } else {
+            // We assume the asset is an audio file
+            console.log("loading " + name + " buffer : " + assetsToBeLoaded[name].loop);
+            assetsLoaded[name] = new Howl({
+                urls: [url],
+                buffer: assetsToBeLoaded[name].buffer,
+                loop: assetsToBeLoaded[name].loop,
+                autoplay: false,
+                volume: assetsToBeLoaded[name].volume,
+                onload: () => {
+					if (++nbLoaded >= numberOfAssetsToLoad)
+                        //callback(assetsLoaded);
+						loadedAssets = assetsLoaded;
+                    
+                    console.log("Loaded asset " + nbLoaded);
+                }
+            }); // End of howler.js callback
+        } // if
+
+    } // for
+}
 /****************************************************************************/
 //le clique de la souris sur le canvas
 let mClick;
@@ -182,6 +213,13 @@ function mainloop()
 
 	switch(ecranJeu){
 		case "selection":
+
+			if(loadedAssets.hasOwnProperty('backgroundImage'))
+				ctx.drawImage(loadedAssets.backgroundImage, 0, 0, w, h);
+
+			if(loadedAssets.hasOwnProperty('player'))
+				ctx.drawImage(loadedAssets.player, 20, 20);
+
 			tableauButton.forEach(function(e) {
 				e.draw(ctx);
 
