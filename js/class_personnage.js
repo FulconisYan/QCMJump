@@ -1,32 +1,39 @@
 class Personnage
 {
-	constructor(img,x, y, w, h)
+	constructor(x, y, w, h)
 	{
 		this.x = x;
 		this.y = y;
 		this.w = w;
 		this.h = h;
-		this.img = new Image();
-		this.img.src = img;
 		this.direction = 1; // 0: left, 1: right
 		this.speed = 5;
 		this.jumping = false;
 		this.speedX = 0;
+		//pas d'image pour l'instant
+		this.img = undefined;
 		this.speedY = 0;
 		this.jumpHeight = 24;
 		this.jumpSpeed = 2;
 	}
 
+	addImg(_img){
+		this.img = _img;
+	}
+
 	draw(ctx)
 	{
-		//ctx.drawImage(this.img, this.x, this.y);
 		ctx.save();
 		ctx.translate(this.x, this.y);
-		ctx.fillStyle = "orange";
-		ctx.fillRect(0, 0, this.w, this.h);
-		ctx.translate(this.w/2 + (this.direction === 0 ? -1 : 1) * this.w/4, this.h/3);
-		ctx.fillStyle = 'black';
-		ctx.fillRect(0, 0, this.w/8, this.h/8);
+		//est que l'image à été chargé ?
+		if(this.img){
+			//Oui alors dessine
+			ctx.drawImage(this.img, 0, 0, this.w, this.h);
+		} else {
+			//Non alors rectangle supsitu
+			ctx.fillStyle = "orange";
+			ctx.fillRect(0, 0, this.w, this.h);
+		}
 		ctx.restore();
 	}
 

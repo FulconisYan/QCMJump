@@ -61,9 +61,7 @@ function init() {
 
 	buttonRetour = new Button(30, 30, 100, 40, "Retour");
 
-	var imageplayer = new Image();
-	imageplayer.src = "images/player.png";
-	joueur = new Personnage(imageplayer,100, 200, 50, 65);
+	joueur = new Personnage(150, 310, 50, 65);
 	
 	tabCases = [0,0,0].map((e, i) => {
 		return new Case(70 + i*150, 110, 60, 60, i+1);
@@ -215,14 +213,11 @@ function mainloop()
 	ctx.clearRect(0, 0, w, h);
 	//creation button du bas 
 
+	if(loadedAssets.hasOwnProperty('backgroundImage'))
+	ctx.drawImage(loadedAssets.backgroundImage, 0, 0, w, h);
+
 	switch(ecranJeu){
 		case "selection":
-
-			if(loadedAssets.hasOwnProperty('backgroundImage'))
-				ctx.drawImage(loadedAssets.backgroundImage, 0, 0, w, h);
-
-			if(loadedAssets.hasOwnProperty('player'))
-				ctx.drawImage(loadedAssets.player, 20, 20);
 
 			tableauButton.forEach(function(e) {
 				e.draw(ctx);
@@ -268,6 +263,9 @@ function mainloop()
 			tabCases.forEach(function(e) {
 				e.draw(ctx);
 			});
+
+			if(loadedAssets.hasOwnProperty('player') && joueur.img === undefined)
+				joueur.addImg(loadedAssets.player);
 
 			joueur.draw(ctx);
 
