@@ -60,7 +60,11 @@ function init() {
 	/*************************************************************/
 
 	buttonRetour = new Button(30, 30, 100, 40, "Retour");
-	joueur = new Personnage(150, 300, 50, 75);
+
+	var imageplayer = new Image();
+	imageplayer.src = "images/player.png";
+	joueur = new Personnage(imageplayer,100, 200, 50, 65);
+	
 	tabCases = [0,0,0].map((e, i) => {
 		return new Case(70 + i*150, 110, 60, 60, i+1);
 	});

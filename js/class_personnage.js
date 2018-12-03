@@ -1,14 +1,14 @@
 class Personnage
 {
-	constructor(x, y, w, h)
+	constructor(img,x, y, w, h)
 	{
 		this.x = x;
 		this.y = y;
 		this.w = w;
 		this.h = h;
+		this.img = new Image();
+		this.img.src = img;
 		this.direction = 1; // 0: left, 1: right
-		/*this.img = new Image();
-		this.img.src = img;*/
 		this.speed = 5;
 		this.jumping = false;
 		this.speedX = 0;
