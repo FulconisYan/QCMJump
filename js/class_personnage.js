@@ -42,7 +42,7 @@ class Personnage
 		this.speedX = 0;
 
 		if(this.jumping)
-			this.speedY += this.jumpSpeed;		
+			this.speedY += this.jumpSpeed;
 		else {
 
 			if(keyInput.ArrowLeft){

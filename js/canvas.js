@@ -9,10 +9,18 @@ let categorie = "aucune";//"Sciences";
 let tableauButton;
 let buttonRetour;
 
-let tabCases;
+let tabBrick;
 let platforme;
 let lblQuestion;
 let lblReponses;
+let lblCategorie;
+let lblTimer;
+let cd;
+let seconds = 5;
+let nQuestion;
+let tabRepondu = [[],[],[],[]];
+let tabReponseDonne = [[],[],[],[]];
+let nCategorieFini = 0;
 
 let jsonFile;
 
@@ -20,7 +28,8 @@ let imageFond;
 
 let assetsToLoadURLs = {
     backgroundImage: { url: 'images/fond.jpg' }, 
-    player: { url: "images/player.png" },
+	player: { url: "images/player.png" },
+	brick: { url: "images/brick.png" }
 };
 
 let loadedAssets = "aucune";
@@ -34,7 +43,7 @@ function init() {
 	w = canvas.width;
 	h = canvas.height;
 
-	ctx.font = "15pt Calibri";
+	ctx.font = "15pt Roboto Slab";
 	/**********************************************************/
 
 	fetch("resources/questions.json").then((res) => {
@@ -59,12 +68,14 @@ function init() {
 
 	/*************************************************************/
 
-	buttonRetour = new Button(30, 30, 100, 40, "Retour");
+	buttonRetour = new Button(10, 30, 100, 40, "Retour");
+	lblCategorie = new Case(125, 30, 240, 60, "Catégorie: "+categorie, "red", "blue");
+	lblTimer = new Case(400,30,50,40,seconds +"s");
 
 	joueur = new Personnage(150, 310, 50, 65);
 	
-	tabCases = [0,0,0].map((e, i) => {
-		return new Case(70 + i*150, 110, 60, 60, i+1);
+	tabBrick = [0,0,0].map((e, i) => {
+		return new Brick(70 + i*150, 110, 60, 60, i+1);
 	});
 	platforme = new Case(0, 375, 500, 20, "");
 	lblQuestion = new Case(0, 420, 500, 50, "QUESTION");
@@ -177,12 +188,28 @@ function collision(o1, o2){
 
 function checkCollision(){
 	
-	let toucheCase = tabCases.reduce((n, e) => {
+	let toucheCase = tabBrick.reduce((n, e) => {
 		if(!n)
 			if(collision(joueur, e)){
-				e.c = e.c === "red" ? "orange" : "red";
+				e.c = e.c === "yellow" ? "red" : "yellow";
 				n = true;
-				console.log("Reponse "+e.n);
+				console.log("Reponse " + e.t);
+				e.c = "red ";
+				e.tap();
+				setTimeout(() => {
+					e.c = "yellow";
+				}, 400);
+				tabReponseDonne[nCategorieFini].push(e.t == jsonFile[categorie][nQuestion].Solution ? 1 : 0);
+				if(tabReponseDonne[nCategorieFini].length === 3){
+					nCategorieFini++;
+					if(nCategorieFini === 4)
+						ecranJeu = "resultatTotal";
+					else
+						ecranJeu = "resultatQCM";
+				} else {
+					getQuestion();
+					seconds = 5;
+				}
 			}
 		return n;
 	}, false);
@@ -200,8 +227,38 @@ function checkCollision(){
 
 	return 0;
 }
+/****************************************************************************/
+
+function startCountDown(){
+	seconds = 5;
+	cd = setInterval(() => {
+		if(seconds === 0)
+			stopCountDown();
+		else
+			seconds--;
+	}, 1000);
+}
+
+function stopCountDown(){
+	//Verifier si autres question
+	//Si oui remettre a 5
+	//si non clear
+	clearInterval(cd);
+}
+
 
 /****************************************************************************/
+
+function getQuestion(){
+	do {
+		nQuestion = Math.floor(Math.random() * jsonFile[categorie].length);
+	} while(tabRepondu[nCategorieFini].indexOf(nQuestion) !== -1);
+	tabRepondu[nCategorieFini].push(nQuestion);
+	lblQuestion.n =  jsonFile[categorie][nQuestion].question;
+	lblReponses.forEach((r, i) => {
+		r.n = (i+1)+": "+jsonFile[categorie][nQuestion].propositions[i+1];
+	});
+}
 
 function mainloop()
 {
@@ -224,11 +281,9 @@ function mainloop()
 						//changer écran
 						ecranJeu = "QCM";
 						categorie = e.texte;
-						let nQuestion = Math.floor(Math.random() * jsonFile[categorie].length);
-						lblQuestion.n =  jsonFile[categorie][nQuestion].question;
-						lblReponses.forEach((r, i) => {
-							r.n = (i+1)+": "+jsonFile[categorie][nQuestion].propositions[i+1];
-						})
+						lblCategorie.n = "Catégorie: "+categorie;
+						getQuestion();
+						startCountDown();
 					}
 				}
 			});
@@ -238,31 +293,44 @@ function mainloop()
 			//Drawing
 			buttonRetour.draw(ctx);
 
-			//Temporary label
-			ctx.save();
-			ctx.fillStyle = 'blue';
-			ctx.fillRect(180, 30, 240, 60);
-			ctx.fillStyle = 'red';
-			ctx.fillText("Catégorie: "+categorie, 200, 60);
-			//end temporary
+			lblCategorie.draw(ctx);
 
+			lblTimer.n = seconds+"s";
+			lblTimer.draw(ctx);
 			platforme.draw(ctx);
 			//Drawing questions
 			lblQuestion.draw(ctx);
 			lblReponses.forEach(e => {
 				e.draw(ctx);
-			});
+			});			
 
-			ctx.restore();
-
-			tabCases.forEach(function(e) {
+			tabBrick.forEach(function(e) {
 				e.draw(ctx);
+				if(loadedAssets.hasOwnProperty('brick') && e.img === undefined)
+					e.addImg(loadedAssets.brick);
 			});
 
 			if(loadedAssets.hasOwnProperty('player') && joueur.img === undefined)
 				joueur.addImg(loadedAssets.player);
 
 			joueur.draw(ctx);
+
+			//Verification si fin de jeu + timer
+			if(seconds === 0){
+				tabReponseDonne[nCategorieFini].push(-1);
+				if(tabReponseDonne[nCategorieFini].length === 3){
+					
+					nCategorieFini++;
+					if(nCategorieFini === 4)
+						ecranJeu = "resultatTotal";
+					else
+						ecranJeu = "resultatQCM";
+				}
+				else {
+					getQuestion();
+					seconds = 5;
+				}
+			}
 
 			//Checking inputs
 			joueur.move(keyInput);
@@ -278,16 +346,54 @@ function mainloop()
 		break;
 
 		case "resultatQCM":
-			//TODO
+			ctx.fillStyle = "white";
+			ctx.fillText("Fin QCM "+categorie, 100, 300);
+			tabReponseDonne.forEach((e, i) => {
+				let txt = "";
+				switch(e){
+					case -1:
+						txt = "Non donnée";
+					break;
+
+					case 0:
+						txt = "Incorrect";
+					break;
+
+					case 1:
+						txt = "Correct";
+					break;
+				}
+				ctx.fillText(txt, 100, 350 + i*50);
+			});
+
+			buttonRetour.draw(ctx);
+
+			buttonRetour.checkOver(mOver);
+			if(mClick != null){
+				if(buttonRetour.checkClick(mClick) === true){
+					//changer écran
+					ecranJeu = "selection";
+					categorie = "aucune";
+				}
+			}
 		break;
 
 		case "resultatTotal":
-			//TODO
+			ctx.fillStyle = "white";
+			ctx.fillText("Fin QCM TOTAL ", 100, 300);
+			let i=0;
+			for(let catName in jsonFile) {
+				/*jsonFile[catName].forEach(e => {
+
+				});*/
+				ctx.fillText(catName + " test", 100, 350 + i*50);
+				i++;
+			}
 		break;
 
 		default:
 			console.log("ERREUR DANS LA VARIABLE ecranJeu !!!");
-		break;
+			return;
 	}
 
 	mClick = null;

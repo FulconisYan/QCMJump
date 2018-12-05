@@ -5,8 +5,8 @@ class Button {
 		this.texte = texte;
 		this.x = x;
 		this.y = y;
-		this.l=l;
-		this.h=h;
+		this.l = l;
+		this.h = h;
 		this.colour = 'rgb(128,0,0)';
 	}
 
@@ -14,9 +14,11 @@ class Button {
 		ctx.save();
 		ctx.translate(this.x, this.y);
 		/*Pourquoi on ne peut pas directement écrire
-		"ctx.fillRect(x,y,this.l,this.h)" ?? */ 
+		"ctx.fillRect(x,y,this.l,this.h)" ?? */
+		//On pourrait c'est équivalent mais pour des dessins suplémentaires c'est plus simple
+		//Voir => https://jsbin.com/girutes/edit?js,output 
 		ctx.fillStyle = this.colour;
-		ctx.fillRect(0,0,this.l,this.h);
+		ctx.fillRect(0, 0, this.l, this.h);
 		//rajouter le texte au centre
 		ctx.fillStyle = "white";
 		ctx.translate(this.l/4, this.h/2);
