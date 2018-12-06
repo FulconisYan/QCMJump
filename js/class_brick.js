@@ -17,12 +17,7 @@ class Brick {
         this.tapped = false;
     }
 
-    addImg(_img){
-        this.img = _img;
-    }
-
     tap(){
-        this.jumpCumu = 0;
         this.tapped = true;
         this.speedY = -this.jumpHeight;
     }

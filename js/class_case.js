@@ -13,10 +13,6 @@ class Case {
         this.posY = this.h/2;
     }
 
-    addImg(_img){
-        this.img = _img;
-    }
-
     draw(ctx){
 		ctx.save();
         ctx.translate(this.x, this.y);

@@ -15,6 +15,7 @@ let lblQuestion;
 let lblReponses;
 let lblCategorie;
 let lblTimer;
+let tempsQuestion = 10;
 let cd;
 let seconds = 5;
 let nQuestion;
@@ -22,17 +23,22 @@ let tabRepondu = [[],[],[],[]];
 let tabReponseDonne = [[],[],[],[]];
 let nCategorieFini = 0;
 
-let jsonFile;
+let jsonFile;    
 
 let imageFond;
-
+let playingMusic = false;
+let btnMuteMusic;
 let assetsToLoadURLs = {
     backgroundImage: { url: 'images/fond.jpg' }, 
 	player: { url: "images/player.png" },
-	brick: { url: "images/brick.png" }
+	brick: { url: "images/brick.png" },
+	marioBrosTheme: { url: "resources/mario-bros-theme.mp3", 
+					tampon: false, loop: true, volume: 1.0
+	}
 };
 
 let loadedAssets = "aucune";
+let assetsLoaded = {};
 
 function init() {  
 
@@ -57,6 +63,8 @@ function init() {
 	
 	//Chargement des assets dans assetsToLoadURLs
 	loadAssetsUsingHowlerAndNoXhr(assetsToLoadURLs);
+
+	btnMuteMusic = new Button(30, 730, 50, 50, "M", "red", "blue");
 
 	/*************************************************************/
 	let tabNames = ["Sport", "Histoire", "Culture", "Sciences"];
@@ -191,7 +199,6 @@ function checkCollision(){
 	let toucheCase = tabBrick.reduce((n, e) => {
 		if(!n)
 			if(collision(joueur, e)){
-				e.c = e.c === "yellow" ? "red" : "yellow";
 				n = true;
 				console.log("Reponse " + e.t);
 				e.c = "red ";
@@ -201,14 +208,25 @@ function checkCollision(){
 				}, 400);
 				tabReponseDonne[nCategorieFini].push(e.t == jsonFile[categorie][nQuestion].Solution ? 1 : 0);
 				if(tabReponseDonne[nCategorieFini].length === 3){
+					//reset joueur position + cases
+					tabBrick.forEach(e => {
+						e.y = e.oldY;
+						e.tapped = false;
+						e.speedY = 0;
+					});
+					joueur.y = joueur.oldY;
+					joueur.jumping = false;
+					joueur.speedY = 0;
+					//Check fin catégorie ou jeu complet
 					nCategorieFini++;
+					stopCountDown();
 					if(nCategorieFini === 4)
 						ecranJeu = "resultatTotal";
 					else
 						ecranJeu = "resultatQCM";
 				} else {
 					getQuestion();
-					seconds = 5;
+					seconds += tempsQuestion;
 				}
 			}
 		return n;
@@ -217,9 +235,8 @@ function checkCollision(){
 	if(toucheCase)
 		return 1;
 
-	if(collision(joueur, platforme)){
+	if(collision(joueur, platforme))
 		return 2;
-	}
 
 	if(joueur.x < 0
 	|| joueur.x+joueur.w > w)
@@ -230,7 +247,7 @@ function checkCollision(){
 /****************************************************************************/
 
 function startCountDown(){
-	seconds = 5;
+	seconds = tempsQuestion;
 	cd = setInterval(() => {
 		if(seconds === 0)
 			stopCountDown();
@@ -241,7 +258,7 @@ function startCountDown(){
 
 function stopCountDown(){
 	//Verifier si autres question
-	//Si oui remettre a 5
+	//Si oui remettre a tempsQuestion
 	//si non clear
 	clearInterval(cd);
 }
@@ -266,7 +283,28 @@ function mainloop()
 	//creation button du bas 
 
 	if(loadedAssets.hasOwnProperty('backgroundImage'))
-	ctx.drawImage(loadedAssets.backgroundImage, 0, 0, w, h);
+		ctx.drawImage(loadedAssets.backgroundImage, 0, 0, w, h);
+
+	if(assetsLoaded.hasOwnProperty('marioBrosTheme') == false)
+		if(loadedAssets.hasOwnProperty('marioBrosTheme')){
+			loadedAssets.marioBrosTheme.play();
+			assetsLoaded.marioBrosTheme = true;
+			playingMusic = true;
+		}
+
+	btnMuteMusic.draw(ctx);
+	btnMuteMusic.checkOver(mOver);
+	if(mClick != null)
+		if(btnMuteMusic.checkClick(mClick) === true){
+			if(playingMusic){
+				loadedAssets.marioBrosTheme.stop();
+				playingMusic = false;
+			} else {
+				loadedAssets.marioBrosTheme.play();
+				playingMusic = true;
+			}
+			//TODO: resume music
+		}	
 
 	switch(ecranJeu){
 		case "selection":
@@ -276,7 +314,7 @@ function mainloop()
 
 				e.checkOver(mOver);//vérfier avec la souris les positions du bloc
 
-				if(mClick != null){
+				if(mClick != null)
 					if(e.checkClick(mClick) === true){
 						//changer écran
 						ecranJeu = "QCM";
@@ -284,8 +322,7 @@ function mainloop()
 						lblCategorie.n = "Catégorie: "+categorie;
 						getQuestion();
 						startCountDown();
-					}
-				}
+					}				
 			});
 		break;
 
@@ -306,12 +343,18 @@ function mainloop()
 
 			tabBrick.forEach(function(e) {
 				e.draw(ctx);
-				if(loadedAssets.hasOwnProperty('brick') && e.img === undefined)
-					e.addImg(loadedAssets.brick);
+				if(assetsLoaded.hasOwnProperty('brick') == false)
+					if(loadedAssets.hasOwnProperty('brick')){
+						e.img = loadedAssets.brick;
+						assetsLoaded.brick = true;
+					}
 			});
 
-			if(loadedAssets.hasOwnProperty('player') && joueur.img === undefined)
-				joueur.addImg(loadedAssets.player);
+			if(assetsLoaded.hasOwnProperty('player') == false)
+				if(loadedAssets.hasOwnProperty('player')){
+					joueur.img = loadedAssets.player;
+					assetsLoaded.player = true;
+				}
 
 			joueur.draw(ctx);
 
@@ -328,7 +371,7 @@ function mainloop()
 				}
 				else {
 					getQuestion();
-					seconds = 5;
+					seconds = tempsQuestion;
 				}
 			}
 
