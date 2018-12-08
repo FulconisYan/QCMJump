@@ -1,14 +1,8 @@
-class Brick {
+class Brick extends Case {
 
-    constructor(_x, _y, _w, _h, _t, _tc){
-        this.x = _x;
-        this.y = _y;
+    constructor(_x, _y, _w, _h, _t){
+        super(_x, _y, _w, _h, _t, "yellow", "brown");
         this.oldY = _y;
-        this.w = _w;
-        this.h = _h;
-        this.t = _t;
-        this.tc = _tc ? _tc : "yellow";
-        this.img = undefined;
         this.posX = this.w/2;
         this.posY = this.h/2;
         this.jumpHeight = 8;
@@ -20,6 +14,10 @@ class Brick {
     tap(){
         this.tapped = true;
         this.speedY = -this.jumpHeight;
+        this.tc = "red";
+        setTimeout(() => {
+            this.tc = "yellow";
+        }, 400);
     }
 
     draw(ctx){
@@ -33,17 +31,6 @@ class Brick {
                 this.y = this.oldY;
             }
         }
-		ctx.save();
-        ctx.translate(this.x, this.y);
-        if(this.img)
-			//Oui alors dessine
-            ctx.drawImage(this.img, 0, 0, this.w, this.h);
-        else {
-            ctx.fillStyle = "brown";
-            ctx.fillRect(0, 0, this.w, this.h);
-        }
-        ctx.fillStyle = this.tc;
-        ctx.fillText(this.t, this.posX, this.posY);
-		ctx.restore();
+        super.draw(ctx);
     }
 }

@@ -1,30 +1,36 @@
 class Case {
 
-    constructor(_x, _y, _w, _h, _n, _c, _bc){
+    constructor(_x, _y, _w, _h, _t, _tc, _bc){
         this.x = _x;
         this.y = _y;
         this.w = _w;
         this.h = _h;
-        this.n = _n;
-        this.c = _c ? _c : "blue";
+        this.t = _t;
+        this.tc = _tc ? _tc : "blue";
         this.bc = _bc ? _bc : "red";
+		//pas d'image pour l'instant
         this.img = undefined;
-        this.posX = this.w/10;
-        this.posY = this.h/2;
+        this.texteX = this.w/10;
+        this.texteY = this.h/2;
     }
 
     draw(ctx){
 		ctx.save();
         ctx.translate(this.x, this.y);
-        if(this.img){
-			//Oui alors dessine
+		//est que l'image à été chargé ?
+        if(this.img != undefined)
+            //Oui alors dessine
             ctx.drawImage(this.img, 0, 0, this.w, this.h);
-        } else {
+        else {
+			//Non alors rectangle supsitu
             ctx.fillStyle = this.bc;
             ctx.fillRect(0, 0, this.w, this.h);
         }
-        ctx.fillStyle = this.c;
-        ctx.fillText(this.n, this.posX, this.posY);
+        if(this.t != undefined){
+            ctx.translate(this.texteX, this.texteY);
+            ctx.fillStyle = this.tc;
+            ctx.fillText(this.t, 0, 0);
+        }
 		ctx.restore();
     }
 }

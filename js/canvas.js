@@ -1,12 +1,10 @@
-window.onload = init;
-
 let canvas, ctx, w, h;
 let joueur;
 
 let ecranJeu = "selection";//"QCM";
 let categorie = "aucune";//"Sciences";
 
-let tableauButton;
+let tableauButton = [];
 let buttonRetour;
 
 let tabBrick;
@@ -25,22 +23,22 @@ let nCategorieFini = 0;
 
 let jsonFile;    
 
-let imageFond;
+let background;
 let playingMusic = false;
 let btnMuteMusic;
-let assetsToLoadURLs = {
+const assetsToLoadURLs = {
     backgroundImage: { url: 'images/fond.jpg' }, 
 	player: { url: "images/player.png" },
 	brick: { url: "images/brick.png" },
-	marioBrosTheme: { url: "resources/mario-bros-theme.mp3", 
+	marioBrosTheme: { url: "resources/mario-bros-theme.mp3",
 					tampon: false, loop: true, volume: 1.0
 	}
 };
 
 let loadedAssets = "aucune";
-let assetsLoaded = {};
+let assetsAttributed = {};
 
-function init() {  
+window.onload = () => {
 
 	canvas = document.querySelector("canvas#myCanvas");
 
@@ -52,43 +50,62 @@ function init() {
 	ctx.font = "15pt Roboto Slab";
 	/**********************************************************/
 
-	fetch("resources/questions.json").then((res) => {
+	fetch("resources/questions.json").then(res => {
 		return res.json();
 	})
-	.then((jsonRes) => {
+	.then(jsonRes => {
 		jsonFile = jsonRes;
+		let x = w/2 - 150; // Yan : C'est quoi le w ? Ce ne serait pas par hasard la largeur du canvas ? 
+		let y = -30;
+
+		for(let catName in jsonRes)
+			tableauButton.push(new Button(x, y += 100, 250, 50, catName, () => {
+				ecranJeu = "QCM";
+				categorie = catName;
+				lblCategorie.t = "Catégorie: "+categorie;
+				getQuestion();
+				startCountDown();
+			}));
 	});
 
 	/**********************************************************/
 	
 	//Chargement des assets dans assetsToLoadURLs
-	loadAssetsUsingHowlerAndNoXhr(assetsToLoadURLs);
-
-	btnMuteMusic = new Button(30, 730, 50, 50, "M", "red", "blue");
-
-	/*************************************************************/
-	let tabNames = ["Sport", "Histoire", "Culture", "Sciences"];
-	let x = w/2 - 150; // Yan : C'est quoi le w ? Ce ne serait pas par hasard la largeur du canvas ? 
-	let y = -30;
-	tableauButton = tabNames.map(e => {
-		return new Button(x, y += 100, 250, 50, e);
+	loadAssets(assetsToLoadURLs);
+	btnMuteMusic = new Button(30, 730, 50, 50, "P", () => {
+		if(assetsAttributed.hasOwnProperty('marioBrosTheme'))
+			if(playingMusic){
+				loadedAssets.marioBrosTheme.stop();
+				playingMusic = false;
+				btnMuteMusic.t = "P";
+			} else {
+				loadedAssets.marioBrosTheme.play();
+				playingMusic = true;
+				btnMuteMusic.t = "M";
+			}
 	});
-
 	/*************************************************************/
 
-	buttonRetour = new Button(10, 30, 100, 40, "Retour");
+	background = new Case(0, 0, w, h, null, "grey", "grey");
+
+	buttonRetour = new Button(10, 30, 100, 40, "Retour", () => {
+		ecranJeu = "selection";
+		categorie = "aucune";
+		stopCountDown();
+	});
 	lblCategorie = new Case(125, 30, 240, 60, "Catégorie: "+categorie, "red", "blue");
-	lblTimer = new Case(400,30,50,40,seconds +"s");
+	lblTimer = new Case(400, 30, 50, 40, seconds+"s");
 
 	joueur = new Personnage(150, 310, 50, 65);
 	
-	tabBrick = [0,0,0].map((e, i) => {
-		return new Brick(70 + i*150, 110, 60, 60, i+1);
+	tabBrick = [1,2,3].map((e, i) => {
+		return new Brick(70 + i*150, 110, 60, 60, e);
 	});
-	platforme = new Case(0, 375, 500, 20, "");
+	
+	platforme = new Case(0, 375, 500, 20, null);
 	lblQuestion = new Case(0, 420, 500, 50, "QUESTION");
-	lblReponses = [0,0,0].map((e, i) => {
-		return new Case(50, 490 + i*80, 380, 60, i);
+	lblReponses = [1,2,3].map((e, i) => {
+		return new Case(50, 490 + i*80, 380, 60, e);
 	});
 
 	/*************************************************************/
@@ -99,7 +116,7 @@ function init() {
 	document.onkeyup = keyUpHandler;
 
 	requestAnimationFrame(mainloop);
-}
+};
 /*******************************************************************************/
 function isImage(url) {
     return (url.match(/\.(jpeg|jpg|gif|png)$/) != null);
@@ -107,7 +124,7 @@ function isImage(url) {
 function isAudio(url) {
     return (url.match(/\.(mp3|ogg|wav)$/) != null);
 }
-function loadAssetsUsingHowlerAndNoXhr(assetsToBeLoaded) {
+function loadAssets(assetsToBeLoaded) {
     let assetsLoaded = {};
     let nbLoaded = 0;
     let numberOfAssetsToLoad = 0;
@@ -116,24 +133,24 @@ function loadAssetsUsingHowlerAndNoXhr(assetsToBeLoaded) {
     for (let name in assetsToBeLoaded) 
         numberOfAssetsToLoad++;
 
-    console.log("Nb assets to load: " + numberOfAssetsToLoad);
+    //console.log("Nb assets to load: " + numberOfAssetsToLoad);
 
     for (name in assetsToBeLoaded) {
         let url = assetsToBeLoaded[name].url;
-        console.log("Loading " + url);
+        //console.log("Loading " + url);
         if (isImage(url)) {
             assetsLoaded[name] = new Image();
             assetsLoaded[name].onload = () => {
 				if (++nbLoaded >= numberOfAssetsToLoad)
 					loadedAssets = assetsLoaded;
 				
-				console.log("Loaded asset " + nbLoaded);
+				//console.log("Loaded asset " + nbLoaded);
 			};
             // will start async loading. 
             assetsLoaded[name].src = url;
         } else {
             // We assume the asset is an audio file
-            console.log("loading " + name + " buffer : " + assetsToBeLoaded[name].loop);
+            //console.log("loading " + name + " buffer : " + assetsToBeLoaded[name].loop);
             assetsLoaded[name] = new Howl({
                 urls: [url],
                 buffer: assetsToBeLoaded[name].buffer,
@@ -144,7 +161,7 @@ function loadAssetsUsingHowlerAndNoXhr(assetsToBeLoaded) {
 					if (++nbLoaded >= numberOfAssetsToLoad)
 						loadedAssets = assetsLoaded;
                     
-                    console.log("Loaded asset " + nbLoaded);
+                    //console.log("Loaded asset " + nbLoaded);
                 }
             }); // End of howler.js callback
         } // if
@@ -200,13 +217,9 @@ function checkCollision(){
 		if(!n)
 			if(collision(joueur, e)){
 				n = true;
-				console.log("Reponse " + e.t);
-				e.c = "red ";
 				e.tap();
-				setTimeout(() => {
-					e.c = "yellow";
-				}, 400);
 				tabReponseDonne[nCategorieFini].push(e.t == jsonFile[categorie][nQuestion].Solution ? 1 : 0);
+				tabRepondu[nCategorieFini].push(nQuestion);
 				if(tabReponseDonne[nCategorieFini].length === 3){
 					//reset joueur position + cases
 					tabBrick.forEach(e => {
@@ -245,7 +258,6 @@ function checkCollision(){
 	return 0;
 }
 /****************************************************************************/
-
 function startCountDown(){
 	seconds = tempsQuestion;
 	cd = setInterval(() => {
@@ -262,77 +274,59 @@ function stopCountDown(){
 	//si non clear
 	clearInterval(cd);
 }
-
-
 /****************************************************************************/
 
 function getQuestion(){
 	do {
 		nQuestion = Math.floor(Math.random() * jsonFile[categorie].length);
 	} while(tabRepondu[nCategorieFini].indexOf(nQuestion) !== -1);
-	tabRepondu[nCategorieFini].push(nQuestion);
-	lblQuestion.n =  jsonFile[categorie][nQuestion].question;
+	lblQuestion.t =  jsonFile[categorie][nQuestion].question;
 	lblReponses.forEach((r, i) => {
-		r.n = (i+1)+": "+jsonFile[categorie][nQuestion].propositions[i+1];
+		r.t = (i+1)+": "+jsonFile[categorie][nQuestion].propositions[i+1];
 	});
 }
 
-function mainloop()
-{
+function mainloop(){
+
 	ctx.clearRect(0, 0, w, h);
 	//creation button du bas 
 
-	if(loadedAssets.hasOwnProperty('backgroundImage'))
-		ctx.drawImage(loadedAssets.backgroundImage, 0, 0, w, h);
+	if(assetsAttributed.hasOwnProperty('backgroundImage') === false)
+		if(loadedAssets.hasOwnProperty('backgroundImage')){
+			background.img = loadedAssets.backgroundImage;
+			assetsAttributed.backgroundImage = true;
+		}
+	
+	background.draw(ctx);
 
-	if(assetsLoaded.hasOwnProperty('marioBrosTheme') == false)
+	if(assetsAttributed.hasOwnProperty('marioBrosTheme') === false)
 		if(loadedAssets.hasOwnProperty('marioBrosTheme')){
 			loadedAssets.marioBrosTheme.play();
-			assetsLoaded.marioBrosTheme = true;
+			assetsAttributed.marioBrosTheme = true;
 			playingMusic = true;
+			btnMuteMusic.t = "M";
 		}
 
 	btnMuteMusic.draw(ctx);
 	btnMuteMusic.checkOver(mOver);
 	if(mClick != null)
-		if(btnMuteMusic.checkClick(mClick) === true){
-			if(playingMusic){
-				loadedAssets.marioBrosTheme.stop();
-				playingMusic = false;
-			} else {
-				loadedAssets.marioBrosTheme.play();
-				playingMusic = true;
-			}
-			//TODO: resume music
-		}	
+		btnMuteMusic.checkClick(mClick);
 
 	switch(ecranJeu){
 		case "selection":
-
 			tableauButton.forEach(function(e) {
 				e.draw(ctx);
-
 				e.checkOver(mOver);//vérfier avec la souris les positions du bloc
-
 				if(mClick != null)
-					if(e.checkClick(mClick) === true){
-						//changer écran
-						ecranJeu = "QCM";
-						categorie = e.texte;
-						lblCategorie.n = "Catégorie: "+categorie;
-						getQuestion();
-						startCountDown();
-					}				
+					e.checkClick(mClick);
 			});
 		break;
 
 		case "QCM":
 			//Drawing
 			buttonRetour.draw(ctx);
-
 			lblCategorie.draw(ctx);
-
-			lblTimer.n = seconds+"s";
+			lblTimer.t = seconds+"s";
 			lblTimer.draw(ctx);
 			platforme.draw(ctx);
 			//Drawing questions
@@ -341,19 +335,20 @@ function mainloop()
 				e.draw(ctx);
 			});			
 
+			if(assetsAttributed.hasOwnProperty('brick') === false)
+				if(loadedAssets.hasOwnProperty('brick')){
+					tabBrick.forEach(e => { e.img = loadedAssets.brick; });
+					assetsAttributed.brick = true;
+				}
+
 			tabBrick.forEach(function(e) {
 				e.draw(ctx);
-				if(assetsLoaded.hasOwnProperty('brick') == false)
-					if(loadedAssets.hasOwnProperty('brick')){
-						e.img = loadedAssets.brick;
-						assetsLoaded.brick = true;
-					}
 			});
 
-			if(assetsLoaded.hasOwnProperty('player') == false)
+			if(assetsAttributed.hasOwnProperty('player') === false)
 				if(loadedAssets.hasOwnProperty('player')){
 					joueur.img = loadedAssets.player;
-					assetsLoaded.player = true;
+					assetsAttributed.player = true;
 				}
 
 			joueur.draw(ctx);
@@ -361,8 +356,8 @@ function mainloop()
 			//Verification si fin de jeu + timer
 			if(seconds === 0){
 				tabReponseDonne[nCategorieFini].push(-1);
+				tabRepondu[nCategorieFini].push(nQuestion);
 				if(tabReponseDonne[nCategorieFini].length === 3){
-					
 					nCategorieFini++;
 					if(nCategorieFini === 4)
 						ecranJeu = "resultatTotal";
@@ -379,13 +374,8 @@ function mainloop()
 			joueur.move(keyInput);
 
 			buttonRetour.checkOver(mOver);
-			if(mClick != null){
-				if(buttonRetour.checkClick(mClick) === true){
-					//changer écran
-					ecranJeu = "selection";
-					categorie = "aucune";
-				}
-			}
+			if(mClick != null)
+				buttonRetour.checkClick(mClick);
 		break;
 
 		case "resultatQCM":
@@ -410,15 +400,9 @@ function mainloop()
 			});
 
 			buttonRetour.draw(ctx);
-
 			buttonRetour.checkOver(mOver);
-			if(mClick != null){
-				if(buttonRetour.checkClick(mClick) === true){
-					//changer écran
-					ecranJeu = "selection";
-					categorie = "aucune";
-				}
-			}
+			if(mClick != null)
+				buttonRetour.checkClick(mClick);
 		break;
 
 		case "resultatTotal":

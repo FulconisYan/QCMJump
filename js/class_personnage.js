@@ -1,40 +1,17 @@
-class Personnage
-{
-	constructor(x, y, w, h)
-	{
-		this.x = x;
-		this.y = y;
-		this.oldY = y;
-		this.w = w;
-		this.h = h;
+class Personnage extends Case {
+
+	constructor(_x, _y, _w, _h){
+		super(_x, _y, _w, _h, null, "black", "orange");
+		this.oldY = _y;
 		this.speed = 5;
 		this.jumping = false;
 		this.speedX = 0;
-		//pas d'image pour l'instant
-		this.img = undefined;
 		this.speedY = 0;
 		this.jumpHeight = 24;
 		this.jumpSpeed = 2;
 	}
 
-	draw(ctx)
-	{
-		ctx.save();
-		ctx.translate(this.x, this.y);
-		//est que l'image à été chargé ?
-		if(this.img){
-			//Oui alors dessine
-			ctx.drawImage(this.img, 0, 0, this.w, this.h);
-		} else {
-			//Non alors rectangle supsitu
-			ctx.fillStyle = "orange";
-			ctx.fillRect(0, 0, this.w, this.h);
-		}
-		ctx.restore();
-	}
-
-	move(keyInput)
-	{
+	move(keyInput){
 		this.speedX = 0;
 
 		if(this.jumping)

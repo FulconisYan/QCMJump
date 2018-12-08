@@ -1,49 +1,24 @@
-class Button {
+class Button extends Case {
 
-	constructor(x, y, l, h, texte)
-	{
-		this.texte = texte;
-		this.x = x;
-		this.y = y;
-		this.l = l;
-		this.h = h;
-		this.colour = 'rgb(128,0,0)';
-	}
-
-	draw(ctx){
-		ctx.save();
-		ctx.translate(this.x, this.y);
-		/*Pourquoi on ne peut pas directement écrire
-		"ctx.fillRect(x,y,this.l,this.h)" ?? */
-		//On pourrait c'est équivalent mais pour des dessins suplémentaires c'est plus simple
-		//Voir => https://jsbin.com/girutes/edit?js,output 
-		ctx.fillStyle = this.colour;
-		ctx.fillRect(0, 0, this.l, this.h);
-		//rajouter le texte au centre
-		ctx.fillStyle = "white";
-		ctx.translate(this.l/4, this.h/2);
-		ctx.fillText(this.texte,0,0);
-		ctx.restore();
+	constructor(_x, _y, _w, _h, _t, _clickBC){
+		super(_x, _y, _w, _h, _t, "white", "red");
+		this.clickBC = _clickBC;
+		this.texteX = this.w/4;
 	}
 
 	checkOver(mPos){
-		if(mPos.x > this.x
+		this.bc =
+		(  mPos.x > this.x
 		&& mPos.y > this.y
-		&& mPos.x < this.x+this.l
-		&& mPos.y < this.y+this.h)
-			this.colour = 'blue';
-		else 
-			this.colour = 'red';
-
+		&& mPos.x < this.x+this.w
+		&& mPos.y < this.y+this.h) ? "blue" : "red";
 	}
 
 	checkClick(mPos){
 		if(mPos.x > this.x
 		&& mPos.y > this.y
-		&& mPos.x < this.x+this.l
+		&& mPos.x < this.x+this.w
 		&& mPos.y < this.y+this.h)
-			return true;
-
-		return false;
+			this.clickBC();
 	}
 }
