@@ -7,7 +7,7 @@ class Brick extends Case {
         this.posY = this.h/2;
         this.jumpHeight = 8;
         this.speedY = 0;
-        this.jumpSpeed = 1;
+        this.gravity = 1;
         this.tapped = false;
     }
 
@@ -20,17 +20,18 @@ class Brick extends Case {
         }, 400);
     }
 
-    draw(ctx){
+    move(delta){
         if(this.tapped){
+
+            this.speedY += this.gravity;
 
             this.y += this.speedY;
 
-            this.speedY += this.jumpSpeed;
             if(this.speedY >= this.jumpHeight){
                 this.tapped = false;
                 this.y = this.oldY;
             }
         }
-        super.draw(ctx);
+
     }
 }

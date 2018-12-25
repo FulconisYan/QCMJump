@@ -34,3 +34,7 @@ class Case {
 		ctx.restore();
     }
 }
+
+function calcDistanceFromSpeed(delta, speed) {
+    return delta/(1/6*100) * speed;
+}

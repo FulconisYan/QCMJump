@@ -19,6 +19,6 @@ class Button extends Case {
 		&& mPos.y > this.y
 		&& mPos.x < this.x+this.w
 		&& mPos.y < this.y+this.h)
-			this.clickBC();
+			this.clickBC(this);
 	}
 }
