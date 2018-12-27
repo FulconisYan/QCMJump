@@ -36,6 +36,7 @@ let btnMuteMusic;
 //ecranJeu Selection
 let tableauButton = [];
 let tabLblRepondu = [];
+let lblTitre;
 
 //ecranJeu QCM
 let tabBrick = [];
@@ -53,15 +54,17 @@ let seconds = 5;
 //Timer animation
 // Voir https://courses.edx.org/courses/course-v1:W3Cx+HTML5.2x+3T2018/courseware/403b445abed54b2ba00322290f1684c7/8003fee922d14e8cac252a00ca01e2dc/1?activate_block_id=block-v1%3AW3Cx%2BHTML5.2x%2B3T2018%2Btype%40vertical%2Bblock%4061e116312bad49eba1a67b5c10d032af
 // for time based animation
-let now, delta = 0;
-// High resolution timer
-let oldTime = 0;
+let oldTime = 0, tempFrame = 0;
+// fps counter
+let lastTime = 0;
+let frameCounter = 0;
 
 /************************************************************************/
 //Assets (images + musiques)
 const assetsToLoadURLs = {
-    backgroundImage: { url: 'images/fond.jpg' }, 
-	player: { url: "images/player.png" },
+    backgroundImage: { url: 'images/fond2.jpg' },
+	santa_sprite: { url: "images/santa_sprite.png" },
+	snow: { url: "images/snow.jpg" },
 	brick: { url: "images/brick.png" },
 	marioBrosTheme: { url: "resources/mario-bros-theme.mp3",
 					tampon: false, loop: true, volume: 1.0
@@ -70,7 +73,7 @@ const assetsToLoadURLs = {
 	mute: { url: "images/mute.png" }
 };
 
-let loadedAssets = "aucune";
+let loadedAssets = {};
 let assetsAttributed = {};
 for(a in assetsToLoadURLs) assetsAttributed[a] = false
 /************************************************************************/
@@ -92,11 +95,11 @@ window.onload = () => {
 	.then(jsonRes => {
 		jsonFile = jsonRes;
 		let x = w/2 - 150; // Yan : C'est quoi le w ? Ce ne serait pas par hasard la largeur du canvas ? 
-		let y = -30;
+		let y = 30;
 
 		let i = 0;
 		for(let catName in jsonRes){
-			tableauButton.push(new Button(x, y += 100, 250, 50, catName, () => {
+			tableauButton.push(new Button(x, y += 100, 250, 50, catName, "white", "red", () => {
 				ecranJeu = ecrans.QCM;
 				//TODO: optimisation (indexOf remplacée par i)
 				idCategorie = tabCategorie.indexOf(catName);
@@ -124,7 +127,7 @@ window.onload = () => {
 	
 	//Chargement des assets dans assetsToLoadURLs
 	loadAssets(assetsToLoadURLs);
-	btnMuteMusic = new Button(30, 730, 50, 50, "P", e => {
+	btnMuteMusic = new Button(30, 730, 50, 50, "P", "white", "red", e => {
 		if(assetsAttributed.marioBrosTheme)
 			if(playingMusic){
 				loadedAssets.marioBrosTheme.stop();
@@ -156,26 +159,60 @@ window.onload = () => {
 	/*************************************************************/
 
 	background = new Case(0, 0, w, h, null, "grey", "grey");
-	lblFps = new Case(420, 730, 50, 50, 0);
+	lblTitre = new Case(130, 40, 200, 50, "QCMJump");
+	lblTitre.texteX = 50; lblTitre.texteY = 30;
 
-	buttonRetour = new Button(10, 30, 100, 40, "Retour", () => {
+	lblFps = new Case(420, 730, 50, 50, 0);
+	lblFps.draw = function(ctx){
+		ctx.save();
+        ctx.translate(this.x+this.w/2, this.y+this.h/2);
+		ctx.beginPath();
+		ctx.arc(0, 0, this.w/2, 0, 2 * Math.PI);
+		ctx.fillStyle = this.bc;
+		ctx.fill();
+		ctx.translate(-this.w/2+this.texteX, -this.h/2+this.texteY);
+		ctx.fillStyle = this.tc;
+		ctx.fillText(this.t, 0, 0);
+		ctx.restore();
+	};
+	lblFps.texteX = 12; lblFps.texteY = 30;
+
+	buttonRetour = new Button(10, 30, 100, 40, "Retour", "white", "red", () => {
 		ecranJeu = ecrans.selection;
 		idCategorie = -1;
 		stopCountDown();
 	});
-	lblCategorie = new Case(125, 30, 240, 60, "Catégorie: aucune", "red", "blue");
+	lblCategorie = new Case(125, 30, 240, 50, "Catégorie: aucune", "red", "blue");
 	lblTimer = new Case(400, 30, 50, 40, seconds+"s");
+	lblTimer.texteX = 10; lblTimer.texteY = 25;
+	lblTimer.draw = function(ctx){
+		ctx.save();
+        ctx.translate(this.x, this.y);
+		ctx.fillStyle = this.bc;
+		ctx.fillRect(0, 0, this.w, this.h);
+
+		ctx.strokeStyle = "white";
+		ctx.strokeRect(0, 0, this.w, this.h);
+		ctx.stroke();
+        
+		ctx.translate(this.texteX, this.texteY);
+		ctx.fillStyle = this.tc;
+		ctx.fillText(this.t, 0, 0);
+		ctx.restore();
+	};
 
 	joueur = new Personnage(150, 310, 50, 65);
 	
 	tabBrick = [1,2,3].map((e, i) => {
-		return new Brick(70 + i*150, 110, 60, 60, e);
+		var b = new Brick(70 + i*150, 110, 60, 60, e);
+		b.texteX = 25; b.texteY = 36;
+		return b;
 	});
 	
-	platforme = new Case(0, 375, 500, 20, null);
-	lblQuestion = new Case(0, 420, 500, 50, "QUESTION");
+	platforme = new Case(0, 375, 500, 20, null, "white");
+	lblQuestion = new Case(0, 420, 500, 50, "QUESTION", "white", "rgba(48, 134, 159, 0.3)");
 	lblReponses = [1,2,3].map((e, i) => {
-		return new Case(50, 490 + i*80, 380, 60, e);
+		return new Case(50, 490 + i*80, 380, 60, e, "white", "red");
 	});
 
 	/*************************************************************/
@@ -221,23 +258,19 @@ function stopCountDown(){
 /****************************************************************************/
 function mainloop(currentTime){
 
-	if(__slow)
-		for(let k=0; k<__n; k++) {
-			//Artificial latency
-		}
+	//Artificial latency
+	if(__slow) for(let k=0; k<__n; k++) {}
 
 	// Timer animation
 	// How long between the current frame and the previous one?
-	delta = currentTime - oldTime;
+	tempFrame = currentTime - oldTime;
 
 	ctx.clearRect(0, 0, w, h);
-	//creation button du bas 
+	//creation button du bas
 
-	if(assetsAttributed.backgroundImage === false)
-		if(loadedAssets.hasOwnProperty('backgroundImage')){
-			background.img = loadedAssets.backgroundImage;
-			assetsAttributed.backgroundImage = true;
-		}
+	attributeAsset('backgroundImage', background, "img");
+
+	attributeAsset('snow', platforme, "img");
 	
 	background.draw(ctx);
 	lblFps.draw(ctx);
@@ -250,17 +283,8 @@ function mainloop(currentTime){
 			btnMuteMusic.t = "M";
 		}
 
-	if(assetsAttributed.play === false)
-		if(loadedAssets.hasOwnProperty('play')){
-			btnMuteMusic.play = loadedAssets.play;
-			assetsAttributed.play = true;
-		}
-	
-	if(assetsAttributed.mute === false)
-		if(loadedAssets.hasOwnProperty('mute')){
-			btnMuteMusic.mute = loadedAssets.mute;
-			assetsAttributed.mute = true;
-		}
+	attributeAsset("play", btnMuteMusic, "play");
+	attributeAsset("mute", btnMuteMusic, "mute");
 
 	btnMuteMusic.draw(ctx);
 	btnMuteMusic.checkOver(mOver);
@@ -269,6 +293,7 @@ function mainloop(currentTime){
 
 	switch(ecranJeu){
 		case ecrans.selection:
+			lblTitre.draw(ctx);
 			tableauButton.forEach((e, i) => {
 				e.draw(ctx);
 				if(tabRepondu[i].length < nbQuestionARepondre){
@@ -301,27 +326,22 @@ function mainloop(currentTime){
 
 			tabBrick.forEach(e => {
 				e.draw(ctx);
-				e.move(delta);
+				e.move(1);
 			});
 
-			if(assetsAttributed.player === false)
-				if(loadedAssets.hasOwnProperty('player')){
-					joueur.img = loadedAssets.player;
-					assetsAttributed.player = true;
-				}
+			attributeAsset("santa_sprite", joueur, "img");
 
 			joueur.draw(ctx);
+			updateAndDrawParticules(ctx, tempFrame);
 
 			//Verification si fin de jeu + timer
-			if(seconds === 0)
-				repondreQuestion(-1);
+			if(seconds === 0) repondreQuestion(-1);
 
-			//Checking inputs
-			joueur.move(keyInput, delta);
+			//Checking inputs1
+			joueur.move(keyInput, 1);
 
 			buttonRetour.checkOver(mOver);
-			if(mClick != null)
-				buttonRetour.checkClick(mClick);
+			if(mClick != null) buttonRetour.checkClick(mClick);
 		break;
 
 		case ecrans.resultatQCM:
@@ -347,8 +367,7 @@ function mainloop(currentTime){
 
 			buttonRetour.draw(ctx);
 			buttonRetour.checkOver(mOver);
-			if(mClick != null)
-				buttonRetour.checkClick(mClick);
+			if(mClick != null) buttonRetour.checkClick(mClick);
 		break;
 
 		case ecrans.resultatTotal:
@@ -380,12 +399,17 @@ function mainloop(currentTime){
 
 	mClick = null;
 
-    // Store time
-    oldTime = currentTime;
+	// Store time for tempFrame
+	oldTime = currentTime;
 
-	var newFps = Math.floor(1/delta*1000);
-	if(Math.abs(lblFps.t - newFps) > 1)
-		lblFps.t = newFps;
+	if(currentTime - lastTime >= 1000){
+		lastTime = currentTime;
+		lblFps.t = frameCounter;
+		frameCounter = 0;
+	}
+
+	//Fin frame
+	frameCounter++;
 
 	requestAnimationFrame(mainloop);
 }

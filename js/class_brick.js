@@ -20,18 +20,18 @@ class Brick extends Case {
         }, 400);
     }
 
-    move(delta){
-        if(this.tapped){
+    move(frameRate){
+        for(let i=0; i<= frameRate; i++)
+            if(this.tapped){
 
-            this.speedY += this.gravity;
+                this.speedY += this.gravity;
 
-            this.y += this.speedY;
+                this.y += this.speedY;
 
-            if(this.speedY >= this.jumpHeight){
-                this.tapped = false;
-                this.y = this.oldY;
+                if(this.speedY >= this.jumpHeight){
+                    this.tapped = false;
+                    this.y = this.oldY;
+                }
             }
-        }
-
     }
 }

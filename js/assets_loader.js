@@ -13,38 +13,51 @@ function loadAssets(assetsToBeLoaded) {
     for (let name in assetsToBeLoaded) 
         numberOfAssetsToLoad++;
 
-    //console.log("Nb assets to load: " + numberOfAssetsToLoad);
+    console.log("Nb assets to load:", numberOfAssetsToLoad);
 
     for (name in assetsToBeLoaded) {
+        
         let url = assetsToBeLoaded[name].url;
-        //console.log("Loading " + url);
+        console.log("Loading", url);
         if (isImage(url)) {
             assetsLoaded[name] = new Image();
             assetsLoaded[name].onload = () => {
-				if (++nbLoaded >= numberOfAssetsToLoad)
-					loadedAssets = assetsLoaded;
-				
-				//console.log("Loaded asset " + nbLoaded);
-			};
-            // will start async loading. 
+                if(++nbLoaded >= numberOfAssetsToLoad)
+                    loadedAssets = assetsLoaded;
+                console.log("Loaded asset", nbLoaded);
+            };
+            assetsLoaded[name].onerror = () => {
+                console.log("Error loading asset", ++nbLoaded);
+            };
+            // will start async loading.
             assetsLoaded[name].src = url;
-        } else {
-            // We assume the asset is an audio file
-            //console.log("loading " + name + " buffer : " + assetsToBeLoaded[name].loop);
-            assetsLoaded[name] = new Howl({
-                urls: [url],
-                buffer: assetsToBeLoaded[name].buffer,
-                loop: assetsToBeLoaded[name].loop,
-                autoplay: false,
-                volume: assetsToBeLoaded[name].volume,
-                onload: () => {
-					if (++nbLoaded >= numberOfAssetsToLoad)
-						loadedAssets = assetsLoaded;
-                    
-                    //console.log("Loaded asset " + nbLoaded);
-                }
-            }); // End of howler.js callback
-        } // if
+        } else 
+            if(isAudio(url)){
+                console.log("loading", name, " buffer :", assetsToBeLoaded[name].loop);
+                assetsLoaded[name] = new Howl({
+                    urls: [url],
+                    buffer: assetsToBeLoaded[name].buffer,
+                    loop: assetsToBeLoaded[name].loop,
+                    autoplay: false,
+                    volume: assetsToBeLoaded[name].volume,
+                    onload: () => {
+                        if(++nbLoaded >= numberOfAssetsToLoad)
+                            loadedAssets = assetsLoaded;
+                        console.log("Loaded asset", nbLoaded);
+                    },
+                    onloaderror: (id, err) => {
+                        console.log("Error loading sound asset ", ++nbLoaded, err, id);
+                    }
+                });
+            } else 
+                console.log("Can't load asset", url, ++nbLoaded);
+    }
+}
 
-    } // for
+function attributeAsset(name, obj, att){
+	if(assetsAttributed[name] === false)
+		if(loadedAssets.hasOwnProperty(name)){
+			obj[att] = loadedAssets[name];
+			assetsAttributed[name] = true;
+		}
 }

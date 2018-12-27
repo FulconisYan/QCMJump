@@ -10,7 +10,7 @@ function getQuestion(){
 }
 
 function repondreQuestion(rep, _callbc){
-	let cat = tabCategorie[idCategorie];
+	var cat = tabCategorie[idCategorie];
     var p = rep === -1 ? -1 : rep == jsonFile[cat][nQuestion].Solution ? 1 : 0;
     tabReponseDonne[idCategorie].push(p);
     tabRepondu[idCategorie].push(nQuestion);
