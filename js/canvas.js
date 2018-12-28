@@ -1,13 +1,16 @@
+"use strict";
+
 //Canvas
 let canvas, ctx, w, h;
 let background;
 let lblFps;
 
+//debug slow frame
 let __slow = false;
 let __n = 3e7; //3e7 === 30000000
 
 //Variables globales
-let ecrans = {
+const ecrans = {
 	selection: 0,
 	QCM: 1,
 	resultatQCM: 2,
@@ -27,14 +30,14 @@ let nbQuestionARepondre = 3;
 let jsonFile, jsonTest; //Fichier json temporaire pour OpenQuizz
 
 //Retour ecranJeu Selection
-let buttonRetour;
+let btnRetour;
 
 //Button + fonction musique
 let playingMusic = false;
 let btnMuteMusic;
 
 //ecranJeu Selection
-let tableauButton = [];
+let tabBtnCategorie = [];
 let tabLblRepondu = [];
 let lblTitre;
 
@@ -42,6 +45,9 @@ let lblTitre;
 let tabBrick = [];
 let platforme, joueur;
 let lblQuestion, lblReponses, lblCategorie, lblTimer;
+
+//ecranJeu resultatTotal
+let btnReset;
 
 //indice question en cours dans le JSON
 let nQuestion;
@@ -75,7 +81,7 @@ const assetsToLoadURLs = {
 
 let loadedAssets = {};
 let assetsAttributed = {};
-for(a in assetsToLoadURLs) assetsAttributed[a] = false
+for(let a in assetsToLoadURLs) assetsAttributed[a] = false
 /************************************************************************/
 window.onload = () => {
 
@@ -87,6 +93,8 @@ window.onload = () => {
 	h = canvas.height;
 
 	ctx.font = "15pt Roboto Slab";
+	ctx.textAlign = "center";
+
 	/**********************************************************/
 
 	fetch("resources/questions.json").then(res => {
@@ -99,7 +107,7 @@ window.onload = () => {
 
 		let i = 0;
 		for(let catName in jsonRes){
-			tableauButton.push(new Button(x, y += 100, 250, 50, catName, "white", "red", () => {
+			tabBtnCategorie.push(new Button(x, y += 100, 250, 50, catName, () => {
 				ecranJeu = ecrans.QCM;
 				//TODO: optimisation (indexOf remplacée par i)
 				idCategorie = tabCategorie.indexOf(catName);
@@ -107,7 +115,9 @@ window.onload = () => {
 				getQuestion();
 				startCountDown();
 			}));
+
 			tabLblRepondu.push(new Case(355, y, 50, 50, "0/"+nbQuestionARepondre));
+
 			tabCategorie.push(catName);
 			tabRepondu[i] = [];
 			tabReponseDonne[i] = [];
@@ -127,7 +137,7 @@ window.onload = () => {
 	
 	//Chargement des assets dans assetsToLoadURLs
 	loadAssets(assetsToLoadURLs);
-	btnMuteMusic = new Button(30, 730, 50, 50, "P", "white", "red", e => {
+	btnMuteMusic = new Button(30, 730, 50, 50, "P", e => {
 		if(assetsAttributed.marioBrosTheme)
 			if(playingMusic){
 				loadedAssets.marioBrosTheme.stop();
@@ -147,6 +157,8 @@ window.onload = () => {
 		ctx.translate(this.x, this.y);
 		ctx.fillStyle = this.bc;
 		ctx.fillRect(0, 0, this.w, this.h);
+		ctx.strokeStyle = "white";
+		ctx.strokeRect(0, 0, this.w, this.h);
 		if(this.play && this.mute)
 			ctx.drawImage(playingMusic ? this.mute : this.play, 0, 0, this.w, this.h);
 		else {
@@ -160,62 +172,57 @@ window.onload = () => {
 
 	background = new Case(0, 0, w, h, null, "grey", "grey");
 	lblTitre = new Case(130, 40, 200, 50, "QCMJump");
-	lblTitre.texteX = 50; lblTitre.texteY = 30;
+	lblFps = new roundCase(420, 730, 50, 50, 0);
 
-	lblFps = new Case(420, 730, 50, 50, 0);
-	lblFps.draw = function(ctx){
-		ctx.save();
-        ctx.translate(this.x+this.w/2, this.y+this.h/2);
-		ctx.beginPath();
-		ctx.arc(0, 0, this.w/2, 0, 2 * Math.PI);
-		ctx.fillStyle = this.bc;
-		ctx.fill();
-		ctx.translate(-this.w/2+this.texteX, -this.h/2+this.texteY);
-		ctx.fillStyle = this.tc;
-		ctx.fillText(this.t, 0, 0);
-		ctx.restore();
-	};
-	lblFps.texteX = 12; lblFps.texteY = 30;
-
-	buttonRetour = new Button(10, 30, 100, 40, "Retour", "white", "red", () => {
+	btnRetour = new Button(10, 30, 100, 40, "Retour", () => {
 		ecranJeu = ecrans.selection;
 		idCategorie = -1;
 		stopCountDown();
 	});
-	lblCategorie = new Case(125, 30, 240, 50, "Catégorie: aucune", "red", "blue");
-	lblTimer = new Case(400, 30, 50, 40, seconds+"s");
-	lblTimer.texteX = 10; lblTimer.texteY = 25;
-	lblTimer.draw = function(ctx){
-		ctx.save();
-        ctx.translate(this.x, this.y);
-		ctx.fillStyle = this.bc;
-		ctx.fillRect(0, 0, this.w, this.h);
+	btnRetour.texte = 50;
 
-		ctx.strokeStyle = "white";
-		ctx.strokeRect(0, 0, this.w, this.h);
-		ctx.stroke();
-        
-		ctx.translate(this.texteX, this.texteY);
-		ctx.fillStyle = this.tc;
-		ctx.fillText(this.t, 0, 0);
-		ctx.restore();
-	};
+	lblCategorie = new Case(125, 30, 240, 50, "Catégorie: aucune", "white", "rgba(48, 134, 159, 0.3)");
+	lblTimer = new Case(400, 30, 50, 40, seconds+"s");
 
 	joueur = new Personnage(150, 310, 50, 65);
 	
 	tabBrick = [1,2,3].map((e, i) => {
 		var b = new Brick(70 + i*150, 110, 60, 60, e);
-		b.texteX = 25; b.texteY = 36;
 		return b;
 	});
 	
 	platforme = new Case(0, 375, 500, 20, null, "white");
-	lblQuestion = new Case(0, 420, 500, 50, "QUESTION", "white", "rgba(48, 134, 159, 0.3)");
+	lblQuestion = new Case(5, 410, 490, 60, "QUESTION");
+	lblQuestion.draw = function(ctx){
+		ctx.save();
+		ctx.translate(this.x, this.y);
+		
+		ctx.fillStyle = this.bc;
+		ctx.fillRect(0, 0, this.w, this.h);
+
+		ctx.strokeStyle = "white";
+		ctx.strokeRect(0, 0, this.w, this.h);
+	
+        
+		ctx.translate(this.texteX, this.texteY);
+		ctx.fillStyle = this.tc;
+		//ctx.fillText(this.t, 0, 0);
+		wrapText(ctx, this.t, 0, 0, this.w, this.h/2);
+		
+		ctx.restore();
+	};
 	lblReponses = [1,2,3].map((e, i) => {
-		return new Case(50, 490 + i*80, 380, 60, e, "white", "red");
+		return new Case(50, 490 + i*80, 380, 60, e);
 	});
 
 	/*************************************************************/
+
+	btnReset = new Button(150, 575, 200, 50, "Recommencer ?", () => {
+		resetGame();
+		ecranJeu = ecrans.selection;
+	});
+
+	/**************************************************************/
 
 	//Fonctions sont dans event_handler.js
 	canvas.onclick = mouseClickHandler;
@@ -226,7 +233,6 @@ window.onload = () => {
 	requestAnimationFrame(mainloop);
 };
 /*******************************************************************************/
-
 function collision(o1, o2){
 
 	if (o1.x >= o2.x+o2.w || o1.x+o1.w <= o2.x)
@@ -237,7 +243,6 @@ function collision(o1, o2){
 
 	return true;
 }
-
 /****************************************************************************/
 function startCountDown(){
 	seconds = tempsQuestion;
@@ -254,6 +259,11 @@ function stopCountDown(){
 	//Si oui remettre a tempsQuestion
 	//si non clear
 	clearInterval(interV);
+}
+
+function resetCountDown(){
+	stopCountDown();
+	startCountDown();
 }
 /****************************************************************************/
 function mainloop(currentTime){
@@ -275,39 +285,34 @@ function mainloop(currentTime){
 	background.draw(ctx);
 	lblFps.draw(ctx);
 
-	if(assetsAttributed.marioBrosTheme === false)
-		if(loadedAssets.hasOwnProperty('marioBrosTheme')){
-			loadedAssets.marioBrosTheme.play();
-			assetsAttributed.marioBrosTheme = true;
-			playingMusic = true;
-			btnMuteMusic.t = "M";
-		}
+	if(attributeAsset("marioBrosTheme", loadedAssets, "marioBrosTheme")){
+		loadedAssets.marioBrosTheme.play();
+		playingMusic = true;
+		btnMuteMusic.t = "M";
+	}
 
 	attributeAsset("play", btnMuteMusic, "play");
 	attributeAsset("mute", btnMuteMusic, "mute");
 
 	btnMuteMusic.draw(ctx);
-	btnMuteMusic.checkOver(mOver);
-	if(mClick != null)
-		btnMuteMusic.checkClick(mClick);
+	btnMuteMusic.checkMouse(mOver, mClick);
 
 	switch(ecranJeu){
 		case ecrans.selection:
 			lblTitre.draw(ctx);
-			tableauButton.forEach((e, i) => {
+			tabBtnCategorie.forEach((e, i) => {
 				e.draw(ctx);
-				if(tabRepondu[i].length < nbQuestionARepondre){
-					e.checkOver(mOver);//Vérfier avec la souris les positions du bloc
-					if(mClick != null)
-						e.checkClick(mClick);
-				}
+				if(tabRepondu[i].length < nbQuestionARepondre)
+					//Vérfier avec la souris les positions du bloc
+					e.checkMouse(mOver, mClick);
+				
 				tabLblRepondu[i].draw(ctx);
 			});
 		break;
 
 		case ecrans.QCM:
 			//Drawing
-			buttonRetour.draw(ctx);
+			btnRetour.draw(ctx);
 			lblCategorie.draw(ctx);
 			lblTimer.t = seconds+"s";
 			lblTimer.draw(ctx);
@@ -318,15 +323,10 @@ function mainloop(currentTime){
 				e.draw(ctx);
 			});			
 
-			if(assetsAttributed.brick === false)
-				if(loadedAssets.hasOwnProperty('brick')){
-					tabBrick.forEach(e => { e.img = loadedAssets.brick; });
-					assetsAttributed.brick = true;
-				}
-
+			attributeAsset("brick", tabBrick, "img");
 			tabBrick.forEach(e => {
 				e.draw(ctx);
-				e.move(1);
+				e.move(tempFrame);
 			});
 
 			attributeAsset("santa_sprite", joueur, "img");
@@ -335,13 +335,15 @@ function mainloop(currentTime){
 			updateAndDrawParticules(ctx, tempFrame);
 
 			//Verification si fin de jeu + timer
-			if(seconds === 0) repondreQuestion(-1);
+			if(seconds === 0)
+				repondreQuestion(-1, resetQCMSprite, c => {
+					tabBrick.forEach(e => { e.tap(c); });
+				});
 
 			//Checking inputs1
-			joueur.move(keyInput, 1);
+			joueur.move(keyInput, tempFrame);
 
-			buttonRetour.checkOver(mOver);
-			if(mClick != null) buttonRetour.checkClick(mClick);
+			btnRetour.checkMouse(mOver, mClick);
 		break;
 
 		case ecrans.resultatQCM:
@@ -365,9 +367,8 @@ function mainloop(currentTime){
 				ctx.fillText(txt, 100, 350 + i*50);
 			});
 
-			buttonRetour.draw(ctx);
-			buttonRetour.checkOver(mOver);
-			if(mClick != null) buttonRetour.checkClick(mClick);
+			btnRetour.draw(ctx);
+			btnRetour.checkMouse(mOver, mClick);
 		break;
 
 		case ecrans.resultatTotal:
@@ -381,19 +382,21 @@ function mainloop(currentTime){
 		*/
 			ctx.fillStyle = "white";
 			ctx.fillText("Fin QCM TOTAL ", 100, 150);
-			var total = tabCategorie.reduce((n, catName, i) => {
+			let total = tabCategorie.reduce((n, catName, i) => {
 
-				var res = tabReponseDonne[i].reduce((n, e) => {
+				let res = tabReponseDonne[i].reduce((n, e) => {
 					return n+(e === 1 ? 1 : 0);
 				}, 0);
 
-				var catRes = res + "/" + nbQuestionARepondre;
+				let catRes = res + "/" + nbQuestionARepondre;
 
 				ctx.fillText("Catégorie "+catName + " " + catRes, 100, 250 + i*50);
 				return n+res;
 			}, 0) + "/" + nbQuestionARepondre*tabCategorie.length;
 
 			ctx.fillText("Resultat Total = "+total, 100, 300 + 50*tabCategorie.length);
+
+			btnReset.draw(ctx);
 		break;
 	}
 

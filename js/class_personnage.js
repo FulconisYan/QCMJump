@@ -1,9 +1,11 @@
-let direction = {
+"use strict";
+
+const direction = {
 	DROITE: 1,
 	GAUCHE: -1
 };
 
-let etat = {
+const etat = {
 	DEBOUT: { min: 0, max: 1, temps: 30 },
 	COURIR: { min: 2, max: 9, temps: 5 },
 	SAUT: { min: 10, max: 10, temps: 30 }
@@ -15,7 +17,7 @@ class Personnage extends Case {
 		super(_x, _y, _w, _h, null, "black", "orange");
 		this.oldY = _y;
 		this.jumping = false;
-		this.speedX = 7;
+		this.speedX = 400;
 		this.speedY = 0;
 		this.direction = direction.DROITE;
 		this.etat = etat.DEBOUT;
@@ -25,8 +27,8 @@ class Personnage extends Case {
 		this.spriteWidth = 64;
 		this.spriteHeight = 68;
 
-		this.jumpHeight = -18;
-		this.gravity = 0.9;
+		this.jumpHeight = -18;//-300;
+		this.gravity = 0.9;//4;
 	}
 
 	draw(ctx){
@@ -75,63 +77,64 @@ class Personnage extends Case {
 		}
 	}
 
-	move(keyInput, frameRate){
-		for(let i=0; i<=frameRate; i++){
-			let inC = 0;
+	move(keyInput, ms){
+		let inC = 0;
 
-			if(this.jumping)
-				this.speedY += this.gravity;
-			else {
-				if(keyInput.ArrowLeft || keyInput.KeyA){
-					inC = -this.speedX;
-					this.direction = direction.GAUCHE;
-					this.changerEtat(etat.COURIR);
-				}
-				
-				if(keyInput.ArrowRight || keyInput.KeyD){
-					inC = this.speedX;
-					this.direction = direction.DROITE;
-					this.changerEtat(etat.COURIR);
-				}
-
-				if(keyInput.ArrowUp || keyInput.KeyW){
-					this.jumping = true;
-					this.speedY = this.jumpHeight;
-					this.changerEtat(etat.SAUT);
-				}
+		if(this.jumping)
+			this.speedY += this.gravity;
+		else {
+			if(keyInput.ArrowLeft || keyInput.KeyA){
+				inC = -this.speedX;
+				this.direction = direction.GAUCHE;
+				this.changerEtat(etat.COURIR);
+			}
+			
+			if(keyInput.ArrowRight || keyInput.KeyD){
+				inC = this.speedX;
+				this.direction = direction.DROITE;
+				this.changerEtat(etat.COURIR);
 			}
 
-			if(this.jumping === false){
-				if(inC === 0)
-					this.changerEtat(etat.DEBOUT);
+			if(keyInput.ArrowUp || keyInput.KeyW){
+				this.jumping = true;
+				this.speedY = this.jumpHeight;
+				this.changerEtat(etat.SAUT);
+			}
+		}
+
+		if(this.jumping === false){
+			if(inC === 0)
+				this.changerEtat(etat.DEBOUT);
+			else
+				if(this.direction === direction.DROITE)
+					createExplosion(this.x+this.w/2, this.y+this.h, "#DDDDDD", 1, 180, 270);
 				else
-					createExplosion(this.x+this.w/2, this.y+this.h, "#DDDDDD", 10);
-			}
+					createExplosion(this.x+this.w/2, this.y+this.h, "#DDDDDD", 1, 270, 360);
+		}
 
-			this.x += inC;
-			this.y += this.speedY;
+		this.x += calcVelocityFromDelta(ms, inC);
+		this.y += this.speedY;//calcVelocityFromDelta(ms, this.speedY);
 
-			switch(checkCollisionPersonnage()){
+		switch(checkCollisionPersonnage()){
 
-				case 1: //Case
-					this.y -= this.speedY;
-					this.speedY = 0;
-					inC = 0;
-				break;
+			case 1: //Case
+				this.y -= this.speedY;
+				this.speedY = 0;
+				inC = 0;
+			break;
 
-				case 2: //Sol (plateforme)
-					this.jumping = false;
-					this.y = this.oldY;
-					this.speedY = 0;
-					this.changerEtat(etat.DEBOUT);
-				break;
+			case 2: //Sol (plateforme)
+				this.jumping = false;
+				this.y = this.oldY;
+				this.speedY = 0;
+				this.changerEtat(etat.DEBOUT);
+			break;
 
-				case 3: //Bords de l'écran
-					//this.x -= inC;
-					//New protection
-					this.x = inC >= 0 ? w-this.w : 1;
-				break;
-			}
+			case 3: //Bords de l'écran
+				//this.x -= inC;
+				//New protection
+				this.x = inC >= 0 ? w-this.w : 1;
+			break;
 		}
 	}
 }
@@ -142,18 +145,8 @@ function checkCollisionPersonnage(){
 		if(!n)
 			if(collision(joueur, e)){
 				n = true;
-				e.tap();
-				repondreQuestion(e.t, () => {
-					//reset joueur position + cases
-					tabBrick.forEach(e => {
-						e.y = e.oldY;
-						e.tapped = false;
-						e.speedY = 0;
-					});
-					joueur.y = joueur.oldY;
-					joueur.jumping = false;
-					joueur.speedY = 0;
-					for(k in keyInput) keyInput[k] = false;
+				repondreQuestion(e.t, resetQCMSprite, c => {
+					e.tap(c);
 				});
 			}
 		return n;

@@ -1,3 +1,5 @@
+"use strict";
+
 //le clique de la souris sur le canvas
 let mClick;
 function mouseClickHandler(event){

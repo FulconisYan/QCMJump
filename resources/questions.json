@@ -1,7 +1,5 @@
 { 
-    "Histoire" :
-
-    [
+    "Histoire" :[
     {
         "question":"Sultan Soliman Kanouni est un Sultan",
         "propositions":
@@ -12,7 +10,6 @@
         },
         "Solution": "1"
     },
-
     {
         "question":"La première guerre mondiale s'est déroulée entre",
         "propositions":
@@ -23,249 +20,181 @@
         },
         "Solution": "3"
     },
-
     {
-
         "question":"Che Guevara est",
         "propositions":
         {
             
-                "1" : "Un homme politique mexicain",
-                "2" : "Un révolutionnaire cubain",
-                "3" : "Un espion russe"
+            "1" : "Un homme politique mexicain",
+            "2" : "Un révolutionnaire cubain",
+            "3" : "Un espion russe"
         },
         "Solution": "2"
     },
-
     {
-
         "question":"Date de couronnement de Charlemagne",
         "propositions":
         {
-            
-                "1": "800",
-                "2": "1780",
-                "3": "1600"
+            "1": "800",
+            "2": "1780",
+            "3": "1600"
         },
         "Solution": "1"
     },
-
     {
-
         "question":"Date de l'indépendance de Singapour",
         "propositions":
-        {
-            
-                "1": "Août 1942",
-                "2": "Août 1965",
-                "3": "Août 1970"
+        {       
+            "1": "Août 1942",
+            "2": "Août 1965",
+            "3": "Août 1970"
         },
         "Solution": "2"
-    }
-    ],
+    }],
 
-
-    "Sport" : 
-    [
-        {
-
+    "Sport" : [
+    {
         "question":"Qui a remporté la Coupe du monde de football en 1990 ?",
         "propositions":
-        {
-            
-                "1" : "Allemagne",
-                "2" : "Espagne",
-                "3" : "Mexique"     
+        {        
+            "1" : "Allemagne",
+            "2" : "Espagne",
+            "3" : "Mexique"     
         },
-
         "Solution" : "1"
-        },
-
-        {
-
+    },
+    {
         "question":"Les Jeux Olympiques d'été 2012 ont été organisés",
         "propositions":
-            {
-                "1": "au Japon",
-                "2": "aux USA",
-                "3": "en Angleterre"
-            },
-
+        {
+            "1": "au Japon",
+            "2": "aux USA",
+            "3": "en Angleterre"
+        },
         "Solution": "3"
-        },
-
-        {
-
-        "question":"Parmi ces joueuses de Tennis,\n laquelle est classée au top en 2018",
+    },
+    {
+        "question":"Parmi ces joueuses de Tennis, laquelle est classée au top en 2018",
         "propositions":
-            {
-                "1": "Kristina MLADENOV",
-                "2": "Caroline GARCIA",
-                "3": "Pauline PARMENTIER"
-                
-            },
-        
-
-        "Solution": "2"
-        },
-
         {
-
+            "1": "Kristina MLADENOV",
+            "2": "Caroline GARCIA",
+            "3": "Pauline PARMENTIER"
+        },
+        "Solution": "2"
+    },
+    {
         "question":" En 2012, Florent Manaudou a remporté une médaille",
         "propositions":
-            {
-                "1" : "D'Or",
-                "2" : "D'Argent",
-                "3" :  "De Bronze"
-            },
-        
-
-        "Solution": "1"
-        }
-
-    ],
-
-    "Sciences" : 
-    [
         {
+            "1" : "D'Or",
+            "2" : "D'Argent",
+            "3" :  "De Bronze"
+        },
+        "Solution": "1"
+    }],
 
+    "Sciences" : [
+    {
         "question":"De combien de couches se compose la Terre ?",
         "propositions":
-            {
-                "1" : "6",
-                "2" : "7",
-                "3" : "8"    
-            },
-
-        "Solution": "2"
-        },
-
         {
-
+            "1" : "6",
+            "2" : "7",
+            "3" : "8"    
+        },
+        "Solution": "2"
+    },
+    {
         "question":"Loi universelle de Gravité",
         "propositions":
-            {
-                "1" : "F(a/b) = F(b/a) = G.(m(a) _m(b) /dˆ2)",
-                "2" : "F(a/b) = F(b/a) = G.(m(a) +m(b) /dˆ2)",
-                "3" : "F(a/b) = F(b/a) = G.(m(a) * m(b) /dˆ2)"
-                
-            },
-        
-        "Solution": "3"
-        },
-
         {
-
+            "1" : "F(a/b) = F(b/a) = G.(m(a) _m(b) /dˆ2)",
+            "2" : "F(a/b) = F(b/a) = G.(m(a) +m(b) /dˆ2)",
+            "3" : "F(a/b) = F(b/a) = G.(m(a) * m(b) /dˆ2)"
+        },
+        "Solution": "3"
+    },
+    {
         "question":"Une mutation génétique est une",
         "propositions":
-            {
-                "1" : "modification héréditaire de l’ADN",
-                "2" : "modification héréditaire de l’ARN",
-                "3" : "maladie génétique "
-            },
-        
-
-        "Solution": "1"
-        },
-
         {
-
+            "1" : "modification héréditaire de l’ADN",
+            "2" : "modification héréditaire de l’ARN",
+            "3" : "maladie génétique "
+        },
+        "Solution": "1"
+    },
+    {
         "question":"Par quel mécanisme les plantes créent-elles de la matière organique",
         "propositions":
-            {
-                "1" : "Par fermentation",
-                "2" : "Par photosynthèse",
-                "3" : "Par respiration"
-            },
-        
-
-        "Solution": "2"
-        },
-
         {
-
+            "1" : "Par fermentation",
+            "2" : "Par photosynthèse",
+            "3" : "Par respiration"
+        },   
+        "Solution": "2"
+    },
+    {
         "question":"Le nombre de planètes dans le système solaire sans compter la Terre",
         "propositions":
-            {
-                "1" : "8",
-                "2" : "6",
-                "3" : "7"
-            },
-        
-
-        "Solution": "3"
-    }    
-    ],
-
-    "Culture" : 
-    [
         {
+            "1" : "8",
+            "2" : "6",
+            "3" : "7"
+        },   
+        "Solution": "3"
+    }],
 
+    "Culture" : [
+    {
         "question":" Guillaume MUSSO est",
         "propositions":
-        {
-            
-                "1" : "Un romancier Français",
-                "2" : "Un romancier Belge",
-                "3" : "Un romancier Suisse"
+        {       
+            "1" : "Un romancier Français",
+            "2" : "Un romancier Belge",
+            "3" : "Un romancier Suisse"
         },
-        
-
         "Solution": "1"
-        },
-
-        {
-
+    },
+    {
         "question":"Le Kazakhstan est",
         "propositions":
         {
-                "1" : "Une région du pakistan",
-                "2" : "Un pays de l'Asie Centrale",
-                "3" : "Une sous-région de la Russie"
+            "1" : "Une région du pakistan",
+            "2" : "Un pays de l'Asie Centrale",
+            "3" : "Une sous-région de la Russie"
         },
-
         "Solution": "2"
-        },
-
-        {
-
+    },
+    {
         "question":"Le Bacalhau est un plat traditionnel",
         "propositions":
         {
-                "1" : "Espagnol",
-                "2" : "Italien",  
-                "3" : "Portugais"
-            
+            "1" : "Espagnol",
+            "2" : "Italien",  
+            "3" : "Portugais" 
         },
-
         "Solution": "3"
-        },
-
-        {
-
+    },
+    {
         "question":"Le seul pays producteur d'argan",
         "propositions":
-            {
-                "1" : "L'Inde",
-                "2" : "le Maroc",
-                "3" : "La Mauritanie"
-            
-        },
-
-        "Solution": "2"
-        },
-
         {
-            
-         "question":"Le hammam est d'origine",
+            "1" : "L'Inde",
+            "2" : "le Maroc",
+            "3" : "La Mauritanie"
+        },
+        "Solution": "2"
+    },
+    {
+        "question":"Le hammam est d'origine",
         "propositions":
-            {
-                "1" : "Turque",
-                "2" : "Orientale",
-                "3" : "Romaine"
-            },
-
+        {
+            "1" : "Turque",
+            "2" : "Orientale",
+            "3" : "Romaine"
+        },
         "Solution": "3"
-        }
-    ]
+    }]
 }
