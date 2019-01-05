@@ -55,6 +55,7 @@ function repondreQuestion(rep, resetCB, nextQuestionCB){
             tabBtnCategorie[idCategorie].bc = "rgba(255,255,255, 0.5)";
             tabLblRepondu[idCategorie].bc = "rgba(255,255,255, 0.5)";
             ecranJeu = ecrans.resultatQCM;
+            btnRetour.x = 200; btnRetour.y = 600;
         }
     } else {
         getQuestion();

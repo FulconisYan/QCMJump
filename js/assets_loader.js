@@ -1,11 +1,13 @@
 "use strict";
 
 function isImage(url) {
-    return (url.match(/\.(jpeg|jpg|gif|png)$/) != null);
+    return url.match(/\.(jpeg|jpg|gif|png)$/) != null;
 }
+
 function isAudio(url) {
-    return (url.match(/\.(mp3|ogg|wav)$/) != null);
+    return url.match(/\.(mp3|ogg|wav)$/) != null;
 }
+
 function loadAssets(assetsToBeLoaded) {
     let assetsLoaded = {};
     let nbLoaded = 0;
@@ -51,8 +53,8 @@ function loadAssets(assetsToBeLoaded) {
                         console.warn("Error loading sound asset ", ++nbLoaded, err, id);
                     }
                 });
-            } //else 
-                //console.log("Can't load asset", url, ++nbLoaded);
+            } else 
+                console.warn("Can't load asset", url, ++nbLoaded);
     }
 }
 

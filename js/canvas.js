@@ -53,9 +53,9 @@ let btnReset;
 let nQuestion;
 
 //Mécanisme Timer
-let tempsQuestion = 999;
+let tempsQuestion = 20;
 let interV;
-let seconds = 5;
+let seconds = tempsQuestion;
 
 //Timer animation
 // Voir https://courses.edx.org/courses/course-v1:W3Cx+HTML5.2x+3T2018/courseware/403b445abed54b2ba00322290f1684c7/8003fee922d14e8cac252a00ca01e2dc/1?activate_block_id=block-v1%3AW3Cx%2BHTML5.2x%2B3T2018%2Btype%40vertical%2Bblock%4061e116312bad49eba1a67b5c10d032af
@@ -174,7 +174,11 @@ window.onload = () => {
 	lblTitre = new Case(130, 40, 200, 50, "QCMJump");
 	lblFps = new roundCase(420, 730, 50, 50, 0);
 
-	btnRetour = new Button(10, 30, 100, 40, "Retour", () => {
+	btnRetour = new Button(10, 30, 100, 40, "Retour", _this => {
+		if(ecranJeu === ecrans.resultatQCM){
+			_this.x = 10;
+			_this.y = 30;
+		}
 		ecranJeu = ecrans.selection;
 		idCategorie = -1;
 		stopCountDown();
@@ -211,13 +215,15 @@ window.onload = () => {
 		
 		ctx.restore();
 	};
+	lblQuestion.texteY = 20;
+
 	lblReponses = [1,2,3].map((e, i) => {
 		return new Case(50, 490 + i*80, 380, 60, e);
 	});
 
 	/*************************************************************/
 
-	btnReset = new Button(150, 575, 200, 50, "Recommencer ?", () => {
+	btnReset = new Button(150, 600, 200, 50, "Recommencer ?", () => {
 		resetGame();
 		ecranJeu = ecrans.selection;
 	});
@@ -348,8 +354,10 @@ function mainloop(currentTime){
 
 		case ecrans.resultatQCM:
 			ctx.fillStyle = "white";
-			ctx.fillText("Fin QCM "+tabCategorie[idCategorie], 100, 300);
-			tabReponseDonne[idCategorie].forEach((e, i) =>{
+			ctx.fillText("Fin QCM "+tabCategorie[idCategorie], 250, 250);
+			
+			ctx.textAlign = "start";
+			var total = tabReponseDonne[idCategorie].reduce((n, e, i) =>{
 				let txt = "Question "+(i+1)+" ";
 				switch(e){
 					case -1:
@@ -362,10 +370,15 @@ function mainloop(currentTime){
 
 					case 1:
 						txt += "Correct";
+						n++;
 					break;
 				}
-				ctx.fillText(txt, 100, 350 + i*50);
-			});
+				ctx.fillText(txt, 150, 330 + i*50);
+				return n;
+			}, 0);
+			ctx.textAlign = "center";
+
+			ctx.fillText("Resultat Total = "+total+"/"+nbQuestionARepondre, 250, 350 + 50*nbQuestionARepondre);
 
 			btnRetour.draw(ctx);
 			btnRetour.checkMouse(mOver, mClick);
@@ -375,14 +388,17 @@ function mainloop(currentTime){
 		/*
 			copy and paste console to access __debug
 
+			idCategorie = 0;
 			tabRepondu = JSON.parse("[[3,2,0],[3,0,2],[3,0,2],[2,1,4]]");
 			tabReponseDonne = JSON.parse("[[1,0,1],[1,1,0],[0,0,1],[0,0,0]]");
 			ecranJeu = ecrans.resultatTotal;
 
 		*/
 			ctx.fillStyle = "white";
-			ctx.fillText("Fin QCM TOTAL ", 100, 150);
-			let total = tabCategorie.reduce((n, catName, i) => {
+			ctx.fillText("Fin QCM TOTAL ", 250, 230);
+
+			ctx.textAlign = "start";
+			var total = tabCategorie.reduce((n, catName, i) => {
 
 				let res = tabReponseDonne[i].reduce((n, e) => {
 					return n+(e === 1 ? 1 : 0);
@@ -390,13 +406,15 @@ function mainloop(currentTime){
 
 				let catRes = res + "/" + nbQuestionARepondre;
 
-				ctx.fillText("Catégorie "+catName + " " + catRes, 100, 250 + i*50);
+				ctx.fillText("Catégorie "+catName + " " + catRes, 150, 300 + i*50);
 				return n+res;
 			}, 0) + "/" + nbQuestionARepondre*tabCategorie.length;
+			ctx.textAlign = "center";
 
-			ctx.fillText("Resultat Total = "+total, 100, 300 + 50*tabCategorie.length);
+			ctx.fillText("Resultat Total = "+total, 250, 320 + 50*tabCategorie.length);
 
 			btnReset.draw(ctx);
+			btnReset.checkMouse(mOver, mClick);
 		break;
 	}
 

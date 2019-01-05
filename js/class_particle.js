@@ -5,12 +5,12 @@ let tabParticule = [];
 // A single explosion particle
 class Particle {
 
-    constructor(){
+    constructor(_x, _y, _color){
 		this.scale = 1.0;
-		this.x = 0;
-		this.y = 0;
+		this.x = _x||0;
+		this.y = _y||0;
 		this.radius = 20;
-		this.color = "#000";
+		this.color = _color||'#000';
 		this.velocityX = 0;
 		this.velocityY = 0;
 		this.scaleSpeed = 0.5;
@@ -71,15 +71,10 @@ function createExplosion(x, y, color, count, minAngle, maxAngle){
     let maxSpeed = 200.0;
     
     for(let i=0; i<count; i++){
-        let p = new Particle();
-        
-        p.x = x;
-        p.y = y;
+        let p = new Particle(x, y, color);
         
         // size of particle
         p.radius = randomFloat(1, 3);
-        
-        p.color = color;
         
         // life time, the higher the value the faster particle 
         // will die
