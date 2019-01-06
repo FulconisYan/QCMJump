@@ -1,6 +1,6 @@
 "use strict";
 
-class Brick extends Case {
+class Brick extends textCase {
 
     constructor(_x, _y, _w, _h, _t){
         super(_x, _y, _w, _h, _t, "yellow", "brown");

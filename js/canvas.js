@@ -73,25 +73,18 @@ const assetsToLoadURLs = {
 	snow: { url: "images/snow.jpg" },
 	brick: { url: "images/brick.png" },
 	marioBrosTheme: { url: "resources/mario-bros-theme.mp3",
-					tampon: false, loop: true, volume: 1.0
+					autoplay: true, loop: true, volume: 1.0
 	},
 	play: { url: "images/play.png" },
 	mute: { url: "images/mute.png" }
 };
-
-let loadedAssets = {};
-let assetsAttributed = {};
-for(let a in assetsToLoadURLs) assetsAttributed[a] = false
 /************************************************************************/
 window.onload = () => {
 
 	canvas = document.querySelector("canvas#myCanvas");
-
 	ctx = canvas.getContext("2d");
-
 	w = canvas.width;
 	h = canvas.height;
-
 	ctx.font = "15pt Roboto Slab";
 	ctx.textAlign = "center";
 
@@ -116,7 +109,7 @@ window.onload = () => {
 				startCountDown();
 			}));
 
-			tabLblRepondu.push(new Case(355, y, 50, 50, "0/"+nbQuestionARepondre));
+			tabLblRepondu.push(new textCase(355, y, 50, 50, "0/"+nbQuestionARepondre));
 
 			tabCategorie.push(catName);
 			tabRepondu[i] = [];
@@ -155,7 +148,7 @@ window.onload = () => {
 	btnMuteMusic.draw = function(ctx) {
 		ctx.save();
 		ctx.translate(this.x, this.y);
-		ctx.fillStyle = this.bc;
+		ctx.fillStyle = this.c;
 		ctx.fillRect(0, 0, this.w, this.h);
 		ctx.strokeStyle = "white";
 		ctx.strokeRect(0, 0, this.w, this.h);
@@ -170,14 +163,14 @@ window.onload = () => {
 	};
 	/*************************************************************/
 
-	background = new Case(0, 0, w, h, null, "grey", "grey");
-	lblTitre = new Case(130, 40, 200, 50, "QCMJump");
+	background = new Case(0, 0, w, h, "grey");
+	lblTitre = new textCase(130, 40, 200, 50, "QCMJump");
 	lblFps = new roundCase(420, 730, 50, 50, 0);
 
-	btnRetour = new Button(10, 30, 100, 40, "Retour", _this => {
+	btnRetour = new Button(10, 30, 100, 40, "Retour", function(){
 		if(ecranJeu === ecrans.resultatQCM){
-			_this.x = 10;
-			_this.y = 30;
+			this.x = 10;
+			this.y = 30;
 		}
 		ecranJeu = ecrans.selection;
 		idCategorie = -1;
@@ -185,23 +178,22 @@ window.onload = () => {
 	});
 	btnRetour.texte = 50;
 
-	lblCategorie = new Case(125, 30, 240, 50, "Catégorie: aucune", "white", "rgba(48, 134, 159, 0.3)");
-	lblTimer = new Case(400, 30, 50, 40, seconds+"s");
+	lblCategorie = new textCase(125, 30, 240, 50, "Catégorie: aucune", "white", "rgba(48, 134, 159, 0.3)");
+	lblTimer = new textCase(400, 30, 50, 40, seconds+"s");
 
 	joueur = new Personnage(150, 310, 50, 65);
 	
 	tabBrick = [1,2,3].map((e, i) => {
-		var b = new Brick(70 + i*150, 110, 60, 60, e);
-		return b;
+		return new Brick(70 + i*150, 110, 60, 60, e);
 	});
 	
-	platforme = new Case(0, 375, 500, 20, null, "white");
-	lblQuestion = new Case(5, 410, 490, 60, "QUESTION");
+	platforme = new Case(0, 376, 500, 20, "white");
+	lblQuestion = new textCase(5, 410, 490, 60, "QUESTION");
 	lblQuestion.draw = function(ctx){
 		ctx.save();
 		ctx.translate(this.x, this.y);
 		
-		ctx.fillStyle = this.bc;
+		ctx.fillStyle = this.c;
 		ctx.fillRect(0, 0, this.w, this.h);
 
 		ctx.strokeStyle = "white";
@@ -218,7 +210,7 @@ window.onload = () => {
 	lblQuestion.texteY = 20;
 
 	lblReponses = [1,2,3].map((e, i) => {
-		return new Case(50, 490 + i*80, 380, 60, e);
+		return new textCase(50, 490 + i*80, 380, 60, e);
 	});
 
 	/*************************************************************/
@@ -241,10 +233,10 @@ window.onload = () => {
 /*******************************************************************************/
 function collision(o1, o2){
 
-	if (o1.x >= o2.x+o2.w || o1.x+o1.w <= o2.x)
+	if (o1.x > o2.x+o2.w || o1.x+o1.w < o2.x)
 	   return false;
 
-	if (o1.y >= o2.y+o2.h || o1.y+o1.h <= o2.y)
+	if (o1.y > o2.y+o2.h || o1.y+o1.h < o2.y)
 	   return false; 
 
 	return true;
@@ -292,7 +284,6 @@ function mainloop(currentTime){
 	lblFps.draw(ctx);
 
 	if(attributeAsset("marioBrosTheme", loadedAssets, "marioBrosTheme")){
-		loadedAssets.marioBrosTheme.play();
 		playingMusic = true;
 		btnMuteMusic.t = "M";
 	}

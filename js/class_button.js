@@ -1,6 +1,6 @@
 "use strict";
 
-class Button extends Case {
+class Button extends textCase {
 
 	constructor(_x, _y, _w, _h, _t, _clickBC){
 		super(_x, _y, _w, _h, _t);
@@ -8,7 +8,7 @@ class Button extends Case {
 	}
 
 	checkMouse(mHover, mClick){
-		this.bc =
+		this.c =
 		(  mHover.x > this.x
 		&& mHover.y > this.y
 		&& mHover.x < this.x+this.w
@@ -19,6 +19,6 @@ class Button extends Case {
 			&& mClick.y > this.y
 			&& mClick.x < this.x+this.w
 			&& mClick.y < this.y+this.h)
-				this.clickBC(this);
+				this.clickBC();
 	}
 }

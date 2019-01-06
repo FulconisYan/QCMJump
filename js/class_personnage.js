@@ -14,7 +14,7 @@ const etat = {
 class Personnage extends Case {
 
 	constructor(_x, _y, _w, _h){
-		super(_x, _y, _w, _h, null, "black", "orange");
+		super(_x, _y, _w, _h, "orange");
 		this.oldY = _y;
 		this.jumping = false;
 		this.speedX = 400;
@@ -53,7 +53,7 @@ class Personnage extends Case {
 				this.w, this.h);
 		} else {
 			//Non alors rectangle supsitu
-            ctx.fillStyle = this.bc;
+            ctx.fillStyle = this.c;
             ctx.fillRect(0, 0, this.w, this.h);
         }
 		ctx.restore();
