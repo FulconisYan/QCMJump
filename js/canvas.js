@@ -100,14 +100,15 @@ window.onload = () => {
 
 		let i = 0;
 		for(let catName in jsonRes){
-			tabBtnCategorie.push(new Button(x, y += 100, 250, 50, catName, () => {
+			var b = new Button(x, y += 100, 250, 50, catName, function(){
 				ecranJeu = ecrans.QCM;
-				//TODO: optimisation (indexOf remplacée par i)
-				idCategorie = tabCategorie.indexOf(catName);
+				idCategorie = this.idCategorie;
 				lblCategorie.t = "Catégorie: "+tabCategorie[idCategorie];
 				getQuestion();
 				startCountDown();
-			}));
+			});
+			b.idCategorie = i;
+			tabBtnCategorie.push(b);
 
 			tabLblRepondu.push(new textCase(355, y, 50, 50, "0/"+nbQuestionARepondre));
 
@@ -129,19 +130,17 @@ window.onload = () => {
 	/**********************************************************/
 	
 	//Chargement des assets dans assetsToLoadURLs
-	loadAssets(assetsToLoadURLs);
-	btnMuteMusic = new Button(30, 730, 50, 50, "P", e => {
+	loadAssets(assetsToLoadURLs, false);
+	btnMuteMusic = new Button(30, 730, 50, 50, "P", function(){
 		if(assetsAttributed.marioBrosTheme)
 			if(playingMusic){
 				loadedAssets.marioBrosTheme.stop();
 				playingMusic = false;
-				if(!e.play)
-					e.t = "P";
+				this.t = "P";
 			} else {
 				loadedAssets.marioBrosTheme.play();
 				playingMusic = true;
-				if(!e.mute)
-					e.t = "M";
+				this.t = "M";
 			}
 	});
 
@@ -176,7 +175,6 @@ window.onload = () => {
 		idCategorie = -1;
 		stopCountDown();
 	});
-	btnRetour.texte = 50;
 
 	lblCategorie = new textCase(125, 30, 240, 50, "Catégorie: aucune", "white", "rgba(48, 134, 159, 0.3)");
 	lblTimer = new textCase(400, 30, 50, 40, seconds+"s");
@@ -202,12 +200,10 @@ window.onload = () => {
         
 		ctx.translate(this.texteX, this.texteY);
 		ctx.fillStyle = this.tc;
-		//ctx.fillText(this.t, 0, 0);
 		wrapText(ctx, this.t, 0, 0, this.w, this.h/2);
 		
 		ctx.restore();
 	};
-	lblQuestion.texteY = 20;
 
 	lblReponses = [1,2,3].map((e, i) => {
 		return new textCase(50, 490 + i*80, 380, 60, e);
@@ -253,9 +249,6 @@ function startCountDown(){
 }
 
 function stopCountDown(){
-	//Verifier si autres question
-	//Si oui remettre a tempsQuestion
-	//si non clear
 	clearInterval(interV);
 }
 
@@ -316,9 +309,7 @@ function mainloop(currentTime){
 			platforme.draw(ctx);
 			//Drawing questions
 			lblQuestion.draw(ctx);
-			lblReponses.forEach(e => {
-				e.draw(ctx);
-			});			
+			lblReponses.forEach(e => e.draw(ctx) );			
 
 			attributeAsset("brick", tabBrick, "img");
 			tabBrick.forEach(e => {
@@ -333,11 +324,11 @@ function mainloop(currentTime){
 
 			//Verification si fin de jeu + timer
 			if(seconds === 0)
-				repondreQuestion(-1, resetQCMSprite, c => {
-					tabBrick.forEach(e => { e.tap(c); });
-				});
+				repondreQuestion(-1, resetQCMSprite, c =>
+					tabBrick.forEach(e => e.tap(c) )
+				);
 
-			//Checking inputs1
+			//Checking inputs
 			joueur.move(keyInput, tempFrame);
 
 			btnRetour.checkMouse(mOver, mClick);
@@ -348,8 +339,8 @@ function mainloop(currentTime){
 			ctx.fillText("Fin QCM "+tabCategorie[idCategorie], 250, 250);
 			
 			ctx.textAlign = "start";
-			var total = tabReponseDonne[idCategorie].reduce((n, e, i) =>{
-				let txt = "Question "+(i+1)+" ";
+			var total = tabReponseDonne[idCategorie].reduce((n, e, i) => {
+				var txt = "Question "+(i+1)+" ";
 				switch(e){
 					case -1:
 						txt += "Non donnée";
@@ -391,11 +382,11 @@ function mainloop(currentTime){
 			ctx.textAlign = "start";
 			var total = tabCategorie.reduce((n, catName, i) => {
 
-				let res = tabReponseDonne[i].reduce((n, e) => {
+				var res = tabReponseDonne[i].reduce((n, e) => {
 					return n+(e === 1 ? 1 : 0);
 				}, 0);
 
-				let catRes = res + "/" + nbQuestionARepondre;
+				var catRes = res + "/" + nbQuestionARepondre;
 
 				ctx.fillText("Catégorie "+catName + " " + catRes, 150, 300 + i*50);
 				return n+res;
