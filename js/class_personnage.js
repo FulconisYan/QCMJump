@@ -6,19 +6,19 @@ const direction = {
 };
 
 const etat = {
-	DEBOUT: { min: 0, max: 1, temps: 30 },
-	COURIR: { min: 2, max: 9, temps: 5 },
-	SAUT: { min: 10, max: 10, temps: 30 }
+	DEBOUT: { min: 0, max: 1, temps: 500 },
+	COURIR: { min: 2, max: 9, temps: 100 },
+	SAUT: { min: 10, max: 10, temps: 500 }
 };
 
 class Personnage extends Case {
 
 	constructor(_x, _y, _w, _h){
-		super(_x, _y, _w, _h, "orange");
+		super(_x, _y, _w, _h, "red");
 		this.oldY = _y;
 		this.jumping = false;
 		this.speedX = 400; //pixels/s
-		this.speedY = 0; //pixels/trame
+		this.speedY = 0; //pixels/s
 		this.direction = direction.DROITE;
 		this.etat = etat.DEBOUT;
 
@@ -27,20 +27,20 @@ class Personnage extends Case {
 		this.spriteWidth = 64;
 		this.spriteHeight = 68;
 
-		this.jumpHeight = -18;//-300;
-		this.gravity = 0.9;//4;
+		this.jumpHeight = 800;
+		this.gravity = 18; //pixels/ms
 	}
 
 	draw(ctx){
 		ctx.save();
         ctx.translate(this.x, this.y);
+		if(this.direction === direction.GAUCHE){
+			ctx.translate(this.w, 0);
+			ctx.scale(this.direction, 1);
+		}		
 		//est que l'image à été chargé ?
         if(this.img != undefined){
-			//Oui alors dessine
-			if(this.direction === direction.GAUCHE){
-				ctx.translate(this.w, 0);
-				ctx.scale(this.direction, 1);
-			}			
+			//Oui alors dessine le sprite correspondant
 			//Source: https://developer.mozilla.org/fr/docs/Web/API/CanvasRenderingContext2D/drawImage
 			/*context.drawImage(img, sx, sy,
 				swidth, sheight,
@@ -54,18 +54,12 @@ class Personnage extends Case {
 		} else {
 			//Non alors rectangle supsitu
             ctx.fillStyle = this.c;
-            ctx.fillRect(0, 0, this.w, this.h);
+			ctx.fillRect(0, 0, this.w, this.h);
+			ctx.translate(this.w*3/4, this.h/4);
+            ctx.fillStyle = "black";
+			ctx.fillRect(0, 0, this.w/10, this.h/10);
         }
 		ctx.restore();
-
-		if(this.spriteNumber >= this.etat.temps){
-			if(this.spriteInd >= (this.etat.max - this.etat.min))
-				this.spriteInd = 0;
-			else
-				this.spriteInd++;
-			this.spriteNumber = 0;
-		} else
-			this.spriteNumber++;
 	}
 
 	changerEtat(e){
@@ -80,8 +74,17 @@ class Personnage extends Case {
 	move(keyInput, ms){
 		let inC = 0;
 
+		if(this.spriteNumber >= this.etat.temps){
+			if(this.spriteInd >= (this.etat.max - this.etat.min))
+				this.spriteInd = 0;
+			else
+				this.spriteInd++;
+			this.spriteNumber = 0;
+		} else
+			this.spriteNumber += ms;
+
 		if(this.jumping)
-			this.speedY += this.gravity;
+			this.speedY += calcGravityFromDelta(ms, this.gravity);
 		else {
 			if(keyInput.ArrowLeft || keyInput.KeyA){
 				inC = -this.speedX;
@@ -97,7 +100,7 @@ class Personnage extends Case {
 
 			if(keyInput.ArrowUp || keyInput.KeyW || keyInput.Space){
 				this.jumping = true;
-				this.speedY = this.jumpHeight;
+				this.speedY = -this.jumpHeight;
 				this.changerEtat(etat.SAUT);
 			}
 		}
@@ -112,15 +115,17 @@ class Personnage extends Case {
 					createExplosion(this.x+this.w/2, this.y+this.h, "#DDDDDD", 1, 270, 360);
 		}
 
-		this.x += calcVelocityFromDelta(ms, inC);
-		this.y += this.speedY;//calcVelocityFromDelta(ms, this.speedY);
+		var tempVelX = calcVelocityFromDelta(ms, inC);
+		var tempVelY = calcVelocityFromDelta(ms, this.speedY);
+
+		this.x += tempVelX;
+		this.y += tempVelY;
 
 		switch(checkCollisionPersonnage()){
 
 			case 1: //Case
-				this.y -= this.speedY;
+				this.y -= tempVelY;
 				this.speedY = 0;
-				inC = 0;
 			break;
 
 			case 2: //Sol (plateforme)
@@ -131,9 +136,8 @@ class Personnage extends Case {
 			break;
 
 			case 3: //Bords de l'écran
-				//this.x -= inC;
-				//New protection
-				this.x = inC >= 0 ? w-this.w : 1;
+				this.x -= tempVelX;
+				//this.x = inC >= 0 ? w-this.w : 1;
 			break;
 		}
 	}
@@ -143,9 +147,7 @@ function checkCollisionPersonnage(){
 	
 	if(tabBrick.some(e => {
 		if(collision(joueur, e)){
-			repondreQuestion(e.t, resetQCMSprite, c => {
-				e.tap(c);
-			});
+			repondreQuestion(e.t, resetQCMSprite, c => e.tap(c) );
 			return true;
 		}
 		return false;

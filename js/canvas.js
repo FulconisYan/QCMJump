@@ -7,7 +7,7 @@ let lblFps;
 
 //debug slow frame
 let __slow = false;
-let __n = 3e7; //3e7 === 30000000
+let __n = 6e7; //6e7 === 60000000
 
 //Variables globales
 const ecrans = {
@@ -74,8 +74,7 @@ const assetsToLoadURLs = {
 	snow: { url: "images/snow.jpg" },
 	brick: { url: "images/brick.png" },
 	marioBrosTheme: { url: "resources/mario-bros-theme.mp3",
-					autoplay: true, loop: true, volume: 1.0
-	},
+					autoplay: true, loop: true, volume: 1.0 },
 	play: { url: "images/play.png" },
 	mute: { url: "images/mute.png" }
 };
@@ -278,6 +277,7 @@ function mainloop(currentTime){
 	}
 	
 	background.draw(ctx);
+	updateAndDrawParticules(ctx, tempFrame, w, h);
 	lblFps.draw(ctx);
 	btnMuteMusic.draw(ctx);
 	btnMuteMusic.checkMouse(mOver, mClick);
@@ -312,7 +312,6 @@ function mainloop(currentTime){
 				e.move(tempFrame);
 			});
 			joueur.draw(ctx);
-			updateAndDrawParticules(ctx, tempFrame);
 
 			//Verification si fin de jeu + timer
 			if(seconds === 0)

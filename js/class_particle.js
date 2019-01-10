@@ -1,7 +1,64 @@
 "use strict";
 
+let tabFusee = [];
 let tabParticule = [];
-	
+
+class Fusee {
+    constructor(_x, _y, _ang){
+        this.x = _x;
+        this.y = _y;
+        this.h = 20;
+        this.w = 70;
+        this.lonArrow = 10;
+        this.ang = _ang;
+        this.minAng = _ang-90; if(this.minAng < 0)   this.minAng +=360;
+        this.maxAng = _ang+90; if(this.maxArg > 360) this.maxArg = this.maxAng%360;
+        this.rad = _ang * Math.PI / 180;
+        var speed = 500;
+        this.velocityX = speed * Math.cos(this.rad);
+        this.velocityY = speed * Math.sin(this.rad);
+        this.color = 'white';
+    }
+      
+    update(ms, w, h){
+        
+        // moving away from explosion center
+        var tX = this.x+this.lonArrow;
+        var tY = this.y+this.h/2;
+        this.color = "rgb("+random(255)+","+random(255)+","+random(255)+")";
+        createExplosion(tX, tY, this.color, 1, this.minAng, this.maxAng);
+        this.x += calcVelocityFromDelta(ms, this.velocityX);
+        this.y += calcVelocityFromDelta(ms, this.velocityY);
+
+        var vX = this.x+this.w/2;
+        var vY = this.y+this.w/2;
+        if(vX < 0 || vY < 0 || vX > w || vY > h)
+            removeFromArray(tabFusee, this);
+    }
+		
+    draw(ctx){
+        ctx.save();
+        ctx.translate(this.x+this.lonArrow, this.y+this.h/2);
+        ctx.rotate(this.rad);
+        
+        ctx.beginPath();
+        
+        ctx.lineTo(-this.w/2, -this.lonArrow);
+        ctx.lineTo(  -this.h,              0);
+        ctx.lineTo(-this.w/2,  this.lonArrow);
+        ctx.lineTo(   this.h,  this.lonArrow);
+        ctx.lineTo( this.w/2,              0);
+        ctx.lineTo(   this.h, -this.lonArrow);
+        ctx.lineTo(  -this.h, -this.lonArrow);
+        
+        ctx.closePath();
+
+        ctx.fillStyle = this.color;
+        ctx.fill();
+
+        ctx.restore();
+    }
+}
 // A single explosion particle
 class Particle {
 
@@ -53,10 +110,6 @@ class Particle {
         ctx.restore();
     }
 }
-
-function calcVelocityFromDelta(delta, speed){
-    return speed * delta / 1000;
-}
 	
 /*Advanced Explosion effect
 * Each particle has a different size, move speed and scale speed.
@@ -66,12 +119,9 @@ function calcVelocityFromDelta(delta, speed){
 * 	color - particles' color
 */
 function createExplosion(x, y, color, count, minAngle, maxAngle){
-
-    let minSpeed = 60.0;
-    let maxSpeed = 200.0;
     
     for(let i=0; i<count; i++){
-        let p = new Particle(x, y, color);
+        var p = new Particle(x, y, color);
         
         // size of particle
         p.radius = randomFloat(1, 3);
@@ -83,8 +133,8 @@ function createExplosion(x, y, color, count, minAngle, maxAngle){
         // use gravity
         p.useGravity = true;
         
-        let speed = randomFloat(minSpeed, maxSpeed);
-        let angle = randomFloat(minAngle, maxAngle);
+        var speed = randomFloat(60.0, 200.0);
+        var angle = randomFloat(minAngle, maxAngle);
         
         p.velocityX = speed * Math.cos(angle * Math.PI / 180.0);
         p.velocityY = speed * Math.sin(angle * Math.PI / 180.0);
@@ -93,16 +143,37 @@ function createExplosion(x, y, color, count, minAngle, maxAngle){
     }
 }
 
+function createRainbowFusee(sX, sY ,ang){
+    tabFusee.push(new Fusee(sX, sY, ang));
+}
+
 // Delta = time between two consecutive frames,
 // for time-based animation
-function updateAndDrawParticules(ctx, delta) {
-    tabParticule.forEach(e => {
-       e.update(delta);
+function updateAndDrawParticules(ctx, delta, w, h) {
+    tabFusee.concat(tabParticule).forEach(e => {
+       e.update(delta, w, h);
        e.draw(ctx);
    });
 }
 
-function randomFloat (min, max){
+function calcVelocityFromDelta(delta, speed){
+    return calcGravityFromDelta(delta, speed) / 100;
+    //return speed * delta / 1000;
+}
+
+function calcGravityFromDelta(delta, speed){
+    return speed * delta / 10;
+}
+
+function random(min, max){
+    return Math.floor(randomFloat(min, max));
+}
+
+function randomFloat(min, max){
+    if(max == undefined){
+        max = min;
+        min = 0;
+    }
     return min + Math.random() * (max - min);
 }
 
