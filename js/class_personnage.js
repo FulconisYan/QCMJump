@@ -17,8 +17,8 @@ class Personnage extends Case {
 		super(_x, _y, _w, _h, "orange");
 		this.oldY = _y;
 		this.jumping = false;
-		this.speedX = 400;
-		this.speedY = 0;
+		this.speedX = 400; //pixels/s
+		this.speedY = 0; //pixels/trame
 		this.direction = direction.DROITE;
 		this.etat = etat.DEBOUT;
 
@@ -95,7 +95,7 @@ class Personnage extends Case {
 				this.changerEtat(etat.COURIR);
 			}
 
-			if(keyInput.ArrowUp || keyInput.KeyW){
+			if(keyInput.ArrowUp || keyInput.KeyW || keyInput.Space){
 				this.jumping = true;
 				this.speedY = this.jumpHeight;
 				this.changerEtat(etat.SAUT);
@@ -141,18 +141,15 @@ class Personnage extends Case {
 
 function checkCollisionPersonnage(){
 	
-	let toucheCase = tabBrick.reduce((n, e) => {
-		if(!n)
-			if(collision(joueur, e)){
-				n = true;
-				repondreQuestion(e.t, resetQCMSprite, c => {
-					e.tap(c);
-				});
-			}
-		return n;
-	}, false);
-
-	if(toucheCase)
+	if(tabBrick.some(e => {
+		if(collision(joueur, e)){
+			repondreQuestion(e.t, resetQCMSprite, c => {
+				e.tap(c);
+			});
+			return true;
+		}
+		return false;
+	}))
 		return 1;
 
 	if(collision(joueur, platforme))

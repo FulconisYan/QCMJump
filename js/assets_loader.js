@@ -13,7 +13,7 @@ let assetsAttributed = {};
 
 function loadAssets(assetsToBeLoaded, _info) {
     let assetsLoaded = {};
-    for(let a in assetsToLoadURLs) assetsAttributed[a] = false;
+    for(let a in assetsToBeLoaded) assetsAttributed[a] = false;
 
     let onload = function(){
         loadedAssets[this.name] = assetsLoaded[this.name];

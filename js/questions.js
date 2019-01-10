@@ -12,9 +12,12 @@ function resetQCMSprite(){
     joueur.jumping = false;
     joueur.direction = direction.DROITE;
     joueur.speedY = 0;
-    for(let k in keyInput) keyInput[k] = false;
+
     //class_particles.js
     tabParticule = [];
+
+    //Corrige movement automatique involontaire
+    for(let k in keyInput) keyInput[k] = false;
     stopCountDown();
 }
 
@@ -22,20 +25,24 @@ function resetGame(){
     tabRepondu = new Array(tabCategorie.length).fill([]);
     tabReponseDonne = new Array(tabCategorie.length).fill([]);
     nCategorieFini = 0;
-    tabLblRepondu.forEach(e => { e.bc = "rgba(48, 134, 159, 0.3)"; e.t = "0/"+nbQuestionARepondre; });
-    tabBtnCategorie.forEach(e => {e.bc = "rgba(48, 134, 159, 0.3)"; });
+    tabLblARepondre.forEach(e => { e.c = "rgba(48, 134, 159, 0.3)"; e.t = nbQuestionARepondre+" à répondre"; });
+    tabLblRepondu.forEach(e => { e.c = "rgba(48, 134, 159, 0.3)"; e.t = "0/"+nbQuestionARepondre; });
+    tabBtnCategorie.forEach(e => e.c = "rgba(48, 134, 159, 0.3)" );
     ecranJeu = ecrans.selection;
 }
 
 function getQuestion(){
-	let cat = tabCategorie[idCategorie];
-	do {
-		nQuestion = Math.floor(Math.random() * jsonFile[cat].length);
-	} while(tabRepondu[idCategorie].indexOf(nQuestion) !== -1);
+    let cat = tabCategorie[idCategorie];
+    if(jsonFile[cat].length > tabRepondu[idCategorie].length)
+        do {
+            nQuestion = Math.floor(Math.random() * jsonFile[cat].length);
+        } while(tabRepondu[idCategorie].indexOf(nQuestion) !== -1);
+    else
+        throw new Error("Plus de question disponibles !");
 	lblQuestion.t = jsonFile[cat][nQuestion].question;
-	lblReponses.forEach((r, i) => {
-		r.t = (i+1)+": "+jsonFile[cat][nQuestion].propositions[i+1];
-	});
+	lblReponses.forEach((r, i) => 
+		r.t = jsonFile[cat][nQuestion].propositions[i+1]
+	);
 }
 
 function repondreQuestion(rep, resetCB, nextQuestionCB){
@@ -43,7 +50,10 @@ function repondreQuestion(rep, resetCB, nextQuestionCB){
     let p = rep === -1 ? -1 : rep == jsonFile[cat][nQuestion].Solution ? 1 : 0;
     tabReponseDonne[idCategorie].push(p);
     tabRepondu[idCategorie].push(nQuestion);
-    tabLblRepondu[idCategorie].t = tabRepondu[idCategorie].length+"/"+nbQuestionARepondre;
+    tabLblARepondre[idCategorie].t = (nbQuestionARepondre-tabRepondu[idCategorie].length)+" restant";
+    tabLblRepondu[idCategorie].t = tabReponseDonne[idCategorie].reduce((n, e) => {
+        return n+(e === 1 ? 1 : 0);
+    }, 0)+"/"+nbQuestionARepondre;
     if(tabReponseDonne[idCategorie].length >= nbQuestionARepondre){
         if(resetCB)
             resetCB();
@@ -52,8 +62,10 @@ function repondreQuestion(rep, resetCB, nextQuestionCB){
         if(++nCategorieFini === tabCategorie.length)
             ecranJeu = ecrans.resultatTotal;
         else {
-            tabBtnCategorie[idCategorie].bc = "rgba(255,255,255, 0.5)";
-            tabLblRepondu[idCategorie].bc = "rgba(255,255,255, 0.5)";
+            tabBtnCategorie[idCategorie].c = "rgba(255,255,255, 0.5)";
+            tabLblRepondu[idCategorie].c = "rgba(255,255,255, 0.5)";
+            tabLblARepondre[idCategorie].c = "rgba(255,255,255, 0.5)";
+            tabLblARepondre[idCategorie].t = "Terminée";
             ecranJeu = ecrans.resultatQCM;
             btnRetour.x = 200; btnRetour.y = 600;
         }
@@ -68,14 +80,14 @@ function repondreQuestion(rep, resetCB, nextQuestionCB){
 
 function wrapText(ctx, text, x, y, maxWidth, lineHeight){
     let words = text.split(" ");
-    let line = "";//words[0];
+    let line = "";
 
-    words.forEach((word, n) => {
-        let testLine = line + word + " ";
-        let metricsWidth = ctx.measureText(testLine).width;
-        if(metricsWidth > maxWidth){//&& n > 0){
+    words.forEach(word => {
+        var testLine = line + " " + word;
+        var metricsWidth = ctx.measureText(testLine).width;
+        if(metricsWidth > maxWidth){
             ctx.fillText(line, x, y);
-            line = word + " ";
+            line = word;
             y += lineHeight;
         } else 
             line = testLine;

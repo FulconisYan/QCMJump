@@ -8,17 +8,10 @@ class Button extends textCase {
 	}
 
 	checkMouse(mHover, mClick){
-		this.c =
-		(  mHover.x > this.x
-		&& mHover.y > this.y
-		&& mHover.x < this.x+this.w
-		&& mHover.y < this.y+this.h) ? "rgb(48, 134, 159)" : "rgba(48, 134, 159, 0.3)";
+		this.c = collision(mHover, this) ? "rgb(48, 134, 159)" : "rgba(48, 134, 159, 0.3)";
 	
 		if(mClick != null)
-			if(mClick.x > this.x
-			&& mClick.y > this.y
-			&& mClick.x < this.x+this.w
-			&& mClick.y < this.y+this.h)
+			if(collision(mClick, this))
 				this.clickBC();
 	}
 }

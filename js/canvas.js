@@ -26,8 +26,8 @@ let tabReponseDonne = [];
 let nCategorieFini = 0;
 let nbQuestionARepondre = 3;
 
-//JSONs
-let jsonFile, jsonTest; //Fichier json temporaire pour OpenQuizz
+//JSON
+let jsonFile;
 
 //Retour ecranJeu Selection
 let btnRetour;
@@ -39,12 +39,13 @@ let btnMuteMusic;
 //ecranJeu Selection
 let tabBtnCategorie = [];
 let tabLblRepondu = [];
+let tabLblARepondre = [];
 let lblTitre;
 
 //ecranJeu QCM
 let tabBrick = [];
 let platforme, joueur;
-let lblQuestion, lblReponses, lblCategorie, lblTimer;
+let lblQuestion, lblReponses, lblReponsesNb = [], lblCategorie, lblTimer;
 
 //ecranJeu resultatTotal
 let btnReset;
@@ -68,7 +69,7 @@ let frameCounter = 0;
 /************************************************************************/
 //Assets (images + musiques)
 const assetsToLoadURLs = {
-    backgroundImage: { url: 'images/fond2.jpg' },
+    backgroundImage: { url: "images/fond.jpg" },
 	santa_sprite: { url: "images/santa_sprite.png" },
 	snow: { url: "images/snow.jpg" },
 	brick: { url: "images/brick.png" },
@@ -96,11 +97,11 @@ window.onload = () => {
 	.then(jsonRes => {
 		jsonFile = jsonRes;
 		let x = w/2 - 150; // Yan : C'est quoi le w ? Ce ne serait pas par hasard la largeur du canvas ? 
-		let y = 30;
 
 		let i = 0;
 		for(let catName in jsonRes){
-			var b = new Button(x, y += 100, 250, 50, catName, function(){
+			var y = 150 + i*110;
+			var b = new Button(x, y, 250, 50, catName, function(){
 				ecranJeu = ecrans.QCM;
 				idCategorie = this.idCategorie;
 				lblCategorie.t = "Catégorie: "+tabCategorie[idCategorie];
@@ -110,7 +111,10 @@ window.onload = () => {
 			b.idCategorie = i;
 			tabBtnCategorie.push(b);
 
-			tabLblRepondu.push(new textCase(355, y, 50, 50, "0/"+nbQuestionARepondre));
+			var laR = new textCase(x+25, y-20, 200, 20, nbQuestionARepondre+" à répondre", "white", "rgba(48, 134, 159, 0.2)");
+			laR.texteY = 18;
+			tabLblARepondre.push(laR);
+			tabLblRepondu.push(new roundCase(355, y, 50, 50, "0/"+nbQuestionARepondre));
 
 			tabCategorie.push(catName);
 			tabRepondu[i] = [];
@@ -119,28 +123,18 @@ window.onload = () => {
 		}
 	});
 
-	//fichier test JSON
-	fetch("resources/qOpenQuizz.json").then(res => {
-		return res.json();
-	})
-	.then(jsonRes => {
-		jsonTest = jsonRes;
-	});
-
 	/**********************************************************/
 	
-	//Chargement des assets dans assetsToLoadURLs
-	loadAssets(assetsToLoadURLs, false);
-	btnMuteMusic = new Button(30, 730, 50, 50, "P", function(){
+	btnMuteMusic = new Button(30, 730, 50, 50, "M", function(){
 		if(assetsAttributed.marioBrosTheme)
 			if(playingMusic){
 				loadedAssets.marioBrosTheme.stop();
 				playingMusic = false;
-				this.t = "P";
+				this.t = "M";
 			} else {
 				loadedAssets.marioBrosTheme.play();
 				playingMusic = true;
-				this.t = "M";
+				this.t = "P";
 			}
 	});
 
@@ -152,7 +146,7 @@ window.onload = () => {
 		ctx.strokeStyle = "white";
 		ctx.strokeRect(0, 0, this.w, this.h);
 		if(this.play && this.mute)
-			ctx.drawImage(playingMusic ? this.mute : this.play, 0, 0, this.w, this.h);
+			ctx.drawImage(playingMusic ? this.play : this.mute, 0, 0, this.w, this.h);
 		else {
 			ctx.translate(this.texteX, this.texteY);
 			ctx.fillStyle = this.tc;
@@ -197,19 +191,19 @@ window.onload = () => {
 		ctx.strokeStyle = "white";
 		ctx.strokeRect(0, 0, this.w, this.h);
 	
-        
 		ctx.translate(this.texteX, this.texteY);
 		ctx.fillStyle = this.tc;
 		wrapText(ctx, this.t, 0, 0, this.w, this.h/2);
 		
 		ctx.restore();
 	};
+	lblQuestion.texteY = 20;
 
 	lblReponses = [1,2,3].map((e, i) => {
-		return new textCase(50, 490 + i*80, 380, 60, e);
+		var y = 490 + i*80;
+		lblReponsesNb.push(new textCase(20, y, 60, 60, e, "yellow", "SaddleBrown"));
+		return new textCase(100, y, 380, 60, e);
 	});
-
-	/*************************************************************/
 
 	btnReset = new Button(150, 600, 200, 50, "Recommencer ?", () => {
 		resetGame();
@@ -217,6 +211,9 @@ window.onload = () => {
 	});
 
 	/**************************************************************/
+
+	//Chargement des assets dans assetsToLoadURLs
+	loadAssets(assetsToLoadURLs, false);
 
 	//Fonctions sont dans event_handler.js
 	canvas.onclick = mouseClickHandler;
@@ -267,29 +264,28 @@ function mainloop(currentTime){
 	tempFrame = currentTime - oldTime;
 
 	ctx.clearRect(0, 0, w, h);
-	//creation button du bas
-
-	attributeAsset('backgroundImage', background, "img");
-
-	attributeAsset('snow', platforme, "img");
+	
+	attributeAsset("backgroundImage", background, "img");
+	attributeAsset("snow", platforme, "img");
+	attributeAsset("play", btnMuteMusic, "play");
+	attributeAsset("mute", btnMuteMusic, "mute");
+	attributeAsset("santa_sprite", joueur, "img");
+	//Attribue l'image aux cases réponses ET aux bricks
+	attributeAsset("brick", lblReponsesNb.concat(tabBrick), "img");
+	if(attributeAsset("marioBrosTheme", loadedAssets, "marioBrosTheme")){
+		playingMusic = true;
+		btnMuteMusic.t = "P";
+	}
 	
 	background.draw(ctx);
 	lblFps.draw(ctx);
-
-	if(attributeAsset("marioBrosTheme", loadedAssets, "marioBrosTheme")){
-		playingMusic = true;
-		btnMuteMusic.t = "M";
-	}
-
-	attributeAsset("play", btnMuteMusic, "play");
-	attributeAsset("mute", btnMuteMusic, "mute");
-
 	btnMuteMusic.draw(ctx);
 	btnMuteMusic.checkMouse(mOver, mClick);
 
 	switch(ecranJeu){
 		case ecrans.selection:
 			lblTitre.draw(ctx);
+			tabLblARepondre.forEach(e => e.draw(ctx) );
 			tabBtnCategorie.forEach((e, i) => {
 				e.draw(ctx);
 				if(tabRepondu[i].length < nbQuestionARepondre)
@@ -309,16 +305,12 @@ function mainloop(currentTime){
 			platforme.draw(ctx);
 			//Drawing questions
 			lblQuestion.draw(ctx);
+			lblReponsesNb.forEach(e => e.draw(ctx) );
 			lblReponses.forEach(e => e.draw(ctx) );			
-
-			attributeAsset("brick", tabBrick, "img");
 			tabBrick.forEach(e => {
 				e.draw(ctx);
 				e.move(tempFrame);
 			});
-
-			attributeAsset("santa_sprite", joueur, "img");
-
 			joueur.draw(ctx);
 			updateAndDrawParticules(ctx, tempFrame);
 
@@ -330,7 +322,6 @@ function mainloop(currentTime){
 
 			//Checking inputs
 			joueur.move(keyInput, tempFrame);
-
 			btnRetour.checkMouse(mOver, mClick);
 		break;
 
@@ -374,7 +365,6 @@ function mainloop(currentTime){
 			tabRepondu = JSON.parse("[[3,2,0],[3,0,2],[3,0,2],[2,1,4]]");
 			tabReponseDonne = JSON.parse("[[1,0,1],[1,1,0],[0,0,1],[0,0,0]]");
 			ecranJeu = ecrans.resultatTotal;
-
 		*/
 			ctx.fillStyle = "white";
 			ctx.fillText("Fin QCM TOTAL ", 250, 230);

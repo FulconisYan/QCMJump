@@ -3,10 +3,8 @@
 class Brick extends textCase {
 
     constructor(_x, _y, _w, _h, _t){
-        super(_x, _y, _w, _h, _t, "yellow", "brown");
+        super(_x, _y, _w, _h, _t, "yellow", "SaddleBrown");
         this.oldY = _y;
-        this.posX = this.w/2;
-        this.posY = this.h/2;
         this.jumpHeight = 8;//200;
         this.speedY = 0;
         this.gravity = 1;//10;
@@ -25,15 +23,12 @@ class Brick extends textCase {
                 this.tc = "green";
             break;
 
-            //case -1
+            //case -1:
             default:
                 this.tc = "orange";
             break;
         }
-        createExplosion(this.x+this.w/2, this.y, this.tc, 10, 180, 360);	
-        setTimeout(() => {
-            this.tc = "yellow";
-        }, 400);
+        createExplosion(this.x+this.w/2, this.y-this.h, this.tc, 20, 180, 360);
     }
 
     move(ms){
@@ -46,6 +41,7 @@ class Brick extends textCase {
             if(this.speedY >= this.jumpHeight){
                 this.tapped = false;
                 this.y = this.oldY;
+                this.tc = "yellow";
             }
         }
     }
