@@ -69,6 +69,8 @@ function repondreQuestion(rep, resetCB, nextQuestionCB){
             ecranJeu = ecrans.resultatQCM;
             btnRetour.x = 200; btnRetour.y = 600;
         }
+        createRainbowFusee(w-50, h-50, 240);
+        createRainbowFusee(50, h-50, 300);
     } else {
         getQuestion();
         if(nextQuestionCB)

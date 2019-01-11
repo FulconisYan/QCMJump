@@ -26,7 +26,7 @@ class Fusee {
         var tX = this.x+this.lonArrow;
         var tY = this.y+this.h/2;
         this.color = "rgb("+random(255)+","+random(255)+","+random(255)+")";
-        createExplosion(tX, tY, this.color, 1, this.minAng, this.maxAng);
+        createExplosion(tX, tY, this.color, 5, this.minAng, this.maxAng);
         this.x += calcVelocityFromDelta(ms, this.velocityX);
         this.y += calcVelocityFromDelta(ms, this.velocityY);
 
@@ -177,7 +177,7 @@ function randomFloat(min, max){
     return min + Math.random() * (max - min);
 }
 
-function removeFromArray(t, o) {
+function removeFromArray(t, o){
     let i = t.indexOf(o);
     if (i !== -1)
         t.splice(i, 1);
