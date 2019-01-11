@@ -58,7 +58,7 @@ téléphone mobile que sur un navigateur web sur ordinateur
 ### Exemples techniques
 
 ##### Récupération des touches claviers 
-'''javascript
+```javascript
 let keyInput = {
 	"ArrowLeft": false,
 	"ArrowRight": false,
@@ -67,10 +67,10 @@ let keyInput = {
 	"KeyD": false,
 	"KeyW": false
 };
-'''
+```
 
 ##### Traitement de l'information des touches : 
-'''javascript
+```javascript
 let inC = 0;
 if(this.jumping)
 	this.speedY += this.gravity;
@@ -94,9 +94,9 @@ if(keyInput.ArrowUp || keyInput.KeyW){
 	this.speedY = this.jumpHeight;
 	this.changerEtat(etat.SAUT);
 });
-'''
+```
 ##### Compteur de trame par seconde 
-'''javascript
+```javascript
 if(currentTime - lastTime >= 1000){
 	lastTime = currentTime;
 	lblFps.t = frameCounter;
@@ -135,7 +135,7 @@ if(!n)
 
 // Pour plus de détail : voir le fichier class_personnage.js 
 }
-'''
+```
 
 
 
