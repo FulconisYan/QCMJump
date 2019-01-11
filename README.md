@@ -105,9 +105,10 @@ if(currentTime - lastTime >= 1000){
 
 //Fin frame
 frameCounter++;
-'''
+}
+````
 ##### Collision personnage :
-'''javascript
+````javascript
 function checkCollisionPersonnage(){
 // Transformation de chaque éléments en expressions booléenes
 // avec l'utilisation de "reduce"
