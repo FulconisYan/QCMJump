@@ -28,7 +28,7 @@ Jeu de type QCM avec une composante de jeu de plateforme.
 
 ### Concept du jeu :
 
-Il s'agit d'un jeu de plateforme mélangé à un quizz de culture génrérale. L'objectif de l'équipe était de réaliser un jeu 
+Il s'agit d'un jeu de plateforme mélangé à un quizz de culture générale. L'objectif de l'équipe était de réaliser un jeu 
 simple mais qui soit techniquement abouti et qui soit réalisé sans frameworks. L'interface du jeu est verticale, car la 
 décision initiale était de faire en sorte que le jeu soit jouable autant sur un navigateur web lorsque l'on utilise un
 téléphone mobile que sur un navigateur web sur ordinateur
