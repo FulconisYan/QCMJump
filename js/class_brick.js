@@ -5,9 +5,9 @@ class Brick extends textCase {
     constructor(_x, _y, _w, _h, _t){
         super(_x, _y, _w, _h, _t, "yellow", "SaddleBrown");
         this.oldY = _y;
-        this.jumpHeight = 8;//200;
+        this.jumpHeight = 400;
         this.speedY = 0;
-        this.gravity = 1;//10;
+        this.gravity = 20;
         this.tapped = false;
     }
 
@@ -34,9 +34,9 @@ class Brick extends textCase {
     move(ms){
         if(this.tapped){
 
-            this.speedY += this.gravity;
+            this.speedY += calcGravityFromDelta(ms, this.gravity);
 
-            this.y += this.speedY;//calcVelocityFromDelta(ms, this.speedY);
+            this.y += calcVelocityFromDelta(ms, this.speedY);
 
             if(this.speedY >= this.jumpHeight){
                 this.tapped = false;
