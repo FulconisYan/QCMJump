@@ -154,13 +154,3 @@ function checkCollisionPersonnage(){
 // D'un obstacle se trouve dans class_personnage
 }
 ```
-
-
-
-
-
-
-
-
-
-
