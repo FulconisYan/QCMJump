@@ -53,7 +53,7 @@ téléphone mobile que sur un navigateur web sur ordinateur
 * Mettre plus en évidence  les effets de couleurs lorsque l'on répond juste (vert) ou faux(red)
 * Changer la musique pour éviter les problèmes de droits d'auteurs.
 
-# Sauriez-vous capable de répondre à toutres les questions avant le temps imparti ?
+# Sauriez-vous capable de répondre à toutes les questions avant le temps imparti ?
 
 ### Exemples techniques
 
