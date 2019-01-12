@@ -57,43 +57,53 @@ téléphone mobile que sur un navigateur web sur ordinateur
 
 ### Exemples techniques
 
-##### Récupération des touches claviers 
+##### Récupération des touches claviers :
 ```javascript
+//Dans event_handler
 let keyInput = {
-	"ArrowLeft": false,
-	"ArrowRight": false,
-	"ArrowUp": false,
-	"KeyA": false, 
-	"KeyD": false,
-	"KeyW": false
+	//Gauche
+	"ArrowLeft": false, "KeyA": false,
+	//Droite
+	"ArrowRight": false, "KeyD": false,
+	//Saut
+	"ArrowUp": false, "KeyW": false, "Space": false
 };
 ```
 
+##### Checking inputs :
+// Dans canvas
+joueur.move(keyInput, tempFrame);
+btnRetour.checkMouse(mOver, mClick);
+
 ##### Traitement de l'information des touches : 
 ```javascript
+// Dans class_personnage
+move(keyInput,ms)
+{
 let inC = 0;
-if(this.jumping)
-	this.speedY += this.gravity;
-else{
-	// Touche gauche ou A (respectivement Q pour les claviers AZERTY)
+if(this.jumping)			
+this.speedY += calcGravityFromDelta(ms, this.gravity);		
+else {	
+	// Touche gauche ou A (respectivement Q pour les claviers AZERTY)		
 	if(keyInput.ArrowLeft || keyInput.KeyA){
-	inC = -this.speedX;
-	this.direction = direction.GAUCHE;
-	this.changerEtat(etat.COURIR);
-}
-			
-if(keyInput.ArrowRight || keyInput.KeyD){
+		inC = -this.speedX;
+		this.direction = direction.GAUCHE;
+		this.changerEtat(etat.COURIR);
+		}	
 	// Touche droit ou D
-	inC = this.speedX;
-	this.direction = direction.DROITE;
-	this.changerEtat(etat.COURIR);
-}
-if(keyInput.ArrowUp || keyInput.KeyW){
+	if(keyInput.ArrowRight || keyInput.KeyD){
+		inC = this.speedX;
+		this.direction = direction.DROITE;
+		this.changerEtat(etat.COURIR);
+		}
 	// Touche haut ou W (respectivement Z pour les claviers AZERTY)
-	this.jumping = true;
-	this.speedY = this.jumpHeight;
-	this.changerEtat(etat.SAUT);
-});
+	// ainsi que la touche espace
+	if(keyInput.ArrowUp || keyInput.KeyW || keyInput.Space){
+		this.jumping = true;
+		this.speedY = -this.jumpHeight;
+		this.changerEtat(etat.SAUT);
+		}
+	}
 ```
 ##### Compteur de trame par seconde 
 ```javascript
@@ -109,32 +119,31 @@ frameCounter++;
 ````
 ##### Collision personnage :
 ````javascript
+// Dans class_personnage
 function checkCollisionPersonnage(){
-// Transformation de chaque éléments en expressions booléenes
-// avec l'utilisation de "reduce"
-let toucheCase = tabBrick.reduce((n, e) => {
-if(!n)
-	if(collision(joueur, e)){
-			n = true;
-			repondreQuestion(e.t, resetQCMSprite, c => {
-			e.tap(c);
-				});
-			}
-			return n;
-	}, false);
-	if(toucheCase)
-		// Cas où il touche la case.
+	//La méthode some() teste si au moins un élément du tableau passe le test implémenté par la fonction fournie.
+	// Ici, l'élément est une brique
+	if(tabBrick.some(e => {
+		// Si le joueur rencontre un bloc
+		if(collision(joueur, e)){
+			repondreQuestion(e.t, resetQCMSprite, c => e.tap(c) );
+			return true;
+		}
+		return false;
+	}))
 		return 1;
+	//Si le personnage retombe sur la plateforme
 	if(collision(joueur, platforme))
-		// Cas où il touche la plateforme.
 		return 2;
+
+	// Si le personnage est en contact avec les bords de l'écran
 	if(joueur.x < 0
 	|| joueur.x+joueur.w > w)
-		// Cas où on touche un mur.
 		return 3;
-	return 0;
 
-// Pour plus de détail : voir le fichier class_personnage.js 
+	return 0;
+// Le fonctionnement du saut par rapport au contact ou non 
+// D'un obstacle se trouve dans class_personnage
 }
 ```
 
