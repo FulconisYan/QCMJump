@@ -69,11 +69,12 @@ let keyInput = {
 	"ArrowUp": false, "KeyW": false, "Space": false
 };
 ```
-
 ##### Checking inputs :
+```javascript
 // Dans canvas
 joueur.move(keyInput, tempFrame);
 btnRetour.checkMouse(mOver, mClick);
+```
 
 ##### Traitement de l'information des touches : 
 ```javascript
@@ -105,13 +106,20 @@ else {
 		}
 	}
 ```
-##### Compteur de trame par seconde 
+##### Compteur de trame par seconde :
 ```javascript
-if(currentTime - lastTime >= 1000){
-	lastTime = currentTime;
-	lblFps.t = frameCounter;
-	frameCounter = 0;
-}
+// Dans canvas
+// Store time for tempFrame
+	oldTime = currentTime;
+
+	if(currentTime - lastTime >= 1000){
+		lastTime = currentTime;
+		lblFps.t = frameCounter;
+		frameCounter = 0;
+	}
+
+	//Fin frame
+	frameCounter++;
 
 //Fin frame
 frameCounter++;
